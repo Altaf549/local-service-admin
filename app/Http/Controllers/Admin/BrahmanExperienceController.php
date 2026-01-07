@@ -49,7 +49,6 @@ class BrahmanExperienceController extends Controller
                 'years' => $exp->years ?? 'N/A',
                 'period' => $period,
                 'is_current' => $exp->is_current ? 'Yes' : 'No',
-                'action' => '<button class="btn btn-sm btn-primary" onclick="editExperience(' . $exp->id . ')"><i class="fas fa-edit"></i> Edit</button> <button class="btn btn-sm btn-danger" onclick="deleteExperience(' . $exp->id . ')"><i class="fas fa-trash"></i> Delete</button>',
             ];
         }
 

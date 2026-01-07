@@ -124,4 +124,128 @@ class BrahmanController extends Controller
             'data' => $achievement,
         ], 201);
     }
+
+    public function getExperiences(Request $request)
+    {
+        $brahman = $request->user();
+        $experiences = \App\Models\BrahmanExperience::where('brahman_id', $brahman->id)
+            ->orderBy('start_date', 'desc')
+            ->get()
+            ->map(function ($exp) {
+                return [
+                    'id' => $exp->id,
+                    'title' => $exp->title,
+                    'description' => $exp->description,
+                    'years' => $exp->years,
+                    'organization' => $exp->organization,
+                    'start_date' => $exp->start_date ? $exp->start_date->format('Y-m-d') : null,
+                    'end_date' => $exp->end_date ? $exp->end_date->format('Y-m-d') : null,
+                    'is_current' => $exp->is_current,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $experiences,
+        ]);
+    }
+
+    public function getAchievements(Request $request)
+    {
+        $brahman = $request->user();
+        $achievements = \App\Models\BrahmanAchievement::where('brahman_id', $brahman->id)
+            ->orderBy('achieved_date', 'desc')
+            ->get()
+            ->map(function ($ach) {
+                return [
+                    'id' => $ach->id,
+                    'title' => $ach->title,
+                    'description' => $ach->description,
+                    'achieved_date' => $ach->achieved_date ? $ach->achieved_date->format('Y-m-d') : null,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $achievements,
+        ]);
+    }
+
+    public function updateExperience(Request $request, $id)
+    {
+        $brahman = $request->user();
+        $experience = \App\Models\BrahmanExperience::where('id', $id)
+            ->where('brahman_id', $brahman->id)
+            ->firstOrFail();
+
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'years' => 'nullable|integer|min:0',
+            'organization' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'is_current' => 'nullable|boolean',
+        ]);
+
+        $experience->update($request->only(['title', 'description', 'years', 'organization', 'start_date', 'end_date', 'is_current']));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Experience updated successfully',
+            'data' => $experience,
+        ]);
+    }
+
+    public function updateAchievement(Request $request, $id)
+    {
+        $brahman = $request->user();
+        $achievement = \App\Models\BrahmanAchievement::where('id', $id)
+            ->where('brahman_id', $brahman->id)
+            ->firstOrFail();
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'achieved_date' => 'nullable|date',
+        ]);
+
+        $achievement->update($request->only(['title', 'description', 'achieved_date']));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Achievement updated successfully',
+            'data' => $achievement,
+        ]);
+    }
+
+    public function deleteExperience(Request $request, $id)
+    {
+        $brahman = $request->user();
+        $experience = \App\Models\BrahmanExperience::where('id', $id)
+            ->where('brahman_id', $brahman->id)
+            ->firstOrFail();
+
+        $experience->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Experience deleted successfully',
+        ]);
+    }
+
+    public function deleteAchievement(Request $request, $id)
+    {
+        $brahman = $request->user();
+        $achievement = \App\Models\BrahmanAchievement::where('id', $id)
+            ->where('brahman_id', $brahman->id)
+            ->firstOrFail();
+
+        $achievement->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Achievement deleted successfully',
+        ]);
+    }
 }

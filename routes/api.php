@@ -43,19 +43,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/profile/update', [ProfileController::class, 'updateProfile']);
     
     // Service Price Update (Admin only or authorized)
-    Route::post('/services/{id}/price/update', [ServiceController::class, 'updatePrice']);
+    Route::post('/services/price/update/{id}', [ServiceController::class, 'updatePrice']);
     
     // Puja Price and Material File Update (Admin only or authorized)
-    Route::post('/pujas/{id}/price/update', [PujaController::class, 'updatePrice']);
+    Route::post('/pujas/price/update/{id}', [PujaController::class, 'updatePrice']);
     
     // Serviceman Profile Management
     Route::post('/serviceman/profile/update', [ServicemanController::class, 'updateProfile']);
+    Route::get('/serviceman/experiences', [ServicemanController::class, 'getExperiences']);
+    Route::get('/serviceman/achievements', [ServicemanController::class, 'getAchievements']);
     Route::post('/serviceman/experience/add', [ServicemanController::class, 'addExperience']);
+    Route::put('/serviceman/experience/{id}', [ServicemanController::class, 'updateExperience']);
+    Route::delete('/serviceman/experience/{id}', [ServicemanController::class, 'deleteExperience']);
     Route::post('/serviceman/achievement/add', [ServicemanController::class, 'addAchievement']);
+    Route::put('/serviceman/achievement/{id}', [ServicemanController::class, 'updateAchievement']);
+    Route::delete('/serviceman/achievement/{id}', [ServicemanController::class, 'deleteAchievement']);
     
     // Brahman Profile Management
     Route::post('/brahman/profile/update', [BrahmanController::class, 'updateProfile']);
+    Route::get('/brahman/experiences', [BrahmanController::class, 'getExperiences']);
+    Route::get('/brahman/achievements', [BrahmanController::class, 'getAchievements']);
     Route::post('/brahman/experience/add', [BrahmanController::class, 'addExperience']);
+    Route::put('/brahman/experience/{id}', [BrahmanController::class, 'updateExperience']);
+    Route::delete('/brahman/experience/{id}', [BrahmanController::class, 'deleteExperience']);
     Route::post('/brahman/achievement/add', [BrahmanController::class, 'addAchievement']);
+    Route::put('/brahman/achievement/{id}', [BrahmanController::class, 'updateAchievement']);
+    Route::delete('/brahman/achievement/{id}', [BrahmanController::class, 'deleteAchievement']);
 });
 

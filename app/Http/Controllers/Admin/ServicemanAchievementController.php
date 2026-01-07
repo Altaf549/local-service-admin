@@ -43,7 +43,6 @@ class ServicemanAchievementController extends Controller
                 'title' => $ach->title ?? 'N/A',
                 'description' => $ach->description ? substr($ach->description, 0, 50) . '...' : 'N/A',
                 'achieved_date' => $ach->achieved_date ? $ach->achieved_date->format('Y-m-d') : 'N/A',
-                'action' => '<button class="btn btn-sm btn-primary" onclick="editAchievement(' . $ach->id . ')"><i class="fas fa-edit"></i> Edit</button> <button class="btn btn-sm btn-danger" onclick="deleteAchievement(' . $ach->id . ')"><i class="fas fa-trash"></i> Delete</button>',
             ];
         }
 

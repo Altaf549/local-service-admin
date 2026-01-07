@@ -777,7 +777,7 @@ profile_photo: [file] (image, max 2MB)
 
 Update service price for the authenticated serviceman.
 
-**Endpoint:** `POST /api/services/{id}/price/update`
+**Endpoint:** `POST /api/services/price/update/{id}`
 
 **Authentication:** Required (Serviceman token)
 
@@ -848,7 +848,7 @@ Authorization: Bearer {serviceman_token}
 
 Update puja price for the authenticated brahman and upload material file.
 
-**Endpoint:** `POST /api/pujas/{id}/price/update`
+**Endpoint:** `POST /api/pujas/price/update/{id}`
 
 **Authentication:** Required (Brahman token)
 
@@ -1151,6 +1151,482 @@ Add a new achievement entry to brahman profile.
 - `title` is required.
 - `description` and `achieved_date` are optional.
 - Multiple achievement entries can be added.
+
+---
+
+## 27. Get Serviceman Experiences
+
+Get all experiences for the authenticated serviceman.
+
+**Endpoint:** `GET /api/serviceman/experiences`
+
+**Authentication:** Required (Serviceman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "title": "Senior Plumber",
+            "description": "Worked as senior plumber for 5 years",
+            "years": 5,
+            "company": "ABC Plumbing Services",
+            "start_date": "2019-01-01",
+            "end_date": "2024-01-01",
+            "is_current": false
+        },
+        {
+            "id": 2,
+            "title": "Lead Technician",
+            "description": "Currently working as lead technician",
+            "years": 2,
+            "company": "XYZ Services",
+            "start_date": "2024-01-01",
+            "end_date": null,
+            "is_current": true
+        }
+    ]
+}
+```
+
+**Note:**
+- Returns all experiences for the authenticated serviceman.
+- Results are ordered by `start_date` in descending order (most recent first).
+
+---
+
+## 28. Get Serviceman Achievements
+
+Get all achievements for the authenticated serviceman.
+
+**Endpoint:** `GET /api/serviceman/achievements`
+
+**Authentication:** Required (Serviceman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "title": "Best Service Provider 2024",
+            "description": "Awarded for outstanding service quality",
+            "achieved_date": "2024-12-31"
+        },
+        {
+            "id": 2,
+            "title": "Customer Excellence Award",
+            "description": "Recognized for exceptional customer service",
+            "achieved_date": "2023-06-15"
+        }
+    ]
+}
+```
+
+**Note:**
+- Returns all achievements for the authenticated serviceman.
+- Results are ordered by `achieved_date` in descending order (most recent first).
+
+---
+
+## 29. Update Serviceman Experience
+
+Update an existing experience entry for the authenticated serviceman.
+
+**Endpoint:** `PUT /api/serviceman/experience/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the experience to update
+
+**Request Body:**
+```json
+{
+    "title": "Senior Plumber",
+    "description": "Updated description",
+    "years": 6,
+    "company": "ABC Plumbing Services",
+    "start_date": "2019-01-01",
+    "end_date": "2025-01-01",
+    "is_current": false
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Experience updated successfully",
+    "data": {
+        "id": 1,
+        "serviceman_id": 1,
+        "title": "Senior Plumber",
+        "description": "Updated description",
+        "years": 6,
+        "company": "ABC Plumbing Services",
+        "start_date": "2019-01-01",
+        "end_date": "2025-01-01",
+        "is_current": false,
+        "created_at": "2026-01-07T10:00:00.000000Z",
+        "updated_at": "2026-01-07T11:00:00.000000Z"
+    }
+}
+```
+
+**Error Responses:**
+- `404`: Experience not found or does not belong to the authenticated serviceman
+- `422`: Validation error
+
+**Note:**
+- All fields are optional.
+- Only experiences belonging to the authenticated serviceman can be updated.
+- Use `PUT` method for this endpoint.
+
+---
+
+## 30. Update Serviceman Achievement
+
+Update an existing achievement entry for the authenticated serviceman.
+
+**Endpoint:** `PUT /api/serviceman/achievement/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the achievement to update
+
+**Request Body:**
+```json
+{
+    "title": "Best Service Provider 2024",
+    "description": "Updated description",
+    "achieved_date": "2024-12-31"
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Achievement updated successfully",
+    "data": {
+        "id": 1,
+        "serviceman_id": 1,
+        "title": "Best Service Provider 2024",
+        "description": "Updated description",
+        "achieved_date": "2024-12-31",
+        "created_at": "2026-01-07T10:00:00.000000Z",
+        "updated_at": "2026-01-07T11:00:00.000000Z"
+    }
+}
+```
+
+**Error Responses:**
+- `404`: Achievement not found or does not belong to the authenticated serviceman
+- `422`: Validation error (title is required)
+
+**Note:**
+- `title` is required.
+- Only achievements belonging to the authenticated serviceman can be updated.
+- Use `PUT` method for this endpoint.
+
+---
+
+## 31. Get Brahman Experiences
+
+Get all experiences for the authenticated brahman.
+
+**Endpoint:** `GET /api/brahman/experiences`
+
+**Authentication:** Required (Brahman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "title": "Vedic Scholar",
+            "description": "Specialized in Vedic rituals and ceremonies",
+            "years": 12,
+            "organization": "Temple Trust",
+            "start_date": "2012-01-01",
+            "end_date": "2024-01-01",
+            "is_current": false
+        },
+        {
+            "id": 2,
+            "title": "Senior Priest",
+            "description": "Currently serving as senior priest",
+            "years": 3,
+            "organization": "Shiva Temple",
+            "start_date": "2023-01-01",
+            "end_date": null,
+            "is_current": true
+        }
+    ]
+}
+```
+
+**Note:**
+- Returns all experiences for the authenticated brahman.
+- Results are ordered by `start_date` in descending order (most recent first).
+
+---
+
+## 32. Get Brahman Achievements
+
+Get all achievements for the authenticated brahman.
+
+**Endpoint:** `GET /api/brahman/achievements`
+
+**Authentication:** Required (Brahman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "title": "Vedic Scholar Award 2024",
+            "description": "Recognized for excellence in Vedic rituals",
+            "achieved_date": "2024-12-31"
+        },
+        {
+            "id": 2,
+            "title": "Excellence in Rituals",
+            "description": "Awarded for outstanding performance in religious ceremonies",
+            "achieved_date": "2023-08-20"
+        }
+    ]
+}
+```
+
+**Note:**
+- Returns all achievements for the authenticated brahman.
+- Results are ordered by `achieved_date` in descending order (most recent first).
+
+---
+
+## 33. Update Brahman Experience
+
+Update an existing experience entry for the authenticated brahman.
+
+**Endpoint:** `PUT /api/brahman/experience/{id}`
+
+**Authentication:** Required (Brahman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the experience to update
+
+**Request Body:**
+```json
+{
+    "title": "Vedic Scholar",
+    "description": "Updated description",
+    "years": 13,
+    "organization": "Temple Trust",
+    "start_date": "2012-01-01",
+    "end_date": "2025-01-01",
+    "is_current": false
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Experience updated successfully",
+    "data": {
+        "id": 1,
+        "brahman_id": 1,
+        "title": "Vedic Scholar",
+        "description": "Updated description",
+        "years": 13,
+        "organization": "Temple Trust",
+        "start_date": "2012-01-01",
+        "end_date": "2025-01-01",
+        "is_current": false,
+        "created_at": "2026-01-07T10:00:00.000000Z",
+        "updated_at": "2026-01-07T11:00:00.000000Z"
+    }
+}
+```
+
+**Error Responses:**
+- `404`: Experience not found or does not belong to the authenticated brahman
+- `422`: Validation error
+
+**Note:**
+- All fields are optional.
+- Only experiences belonging to the authenticated brahman can be updated.
+- Use `PUT` method for this endpoint.
+
+---
+
+## 34. Update Brahman Achievement
+
+Update an existing achievement entry for the authenticated brahman.
+
+**Endpoint:** `PUT /api/brahman/achievement/{id}`
+
+**Authentication:** Required (Brahman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the achievement to update
+
+**Request Body:**
+```json
+{
+    "title": "Vedic Scholar Award 2024",
+    "description": "Updated description",
+    "achieved_date": "2024-12-31"
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Achievement updated successfully",
+    "data": {
+        "id": 1,
+        "brahman_id": 1,
+        "title": "Vedic Scholar Award 2024",
+        "description": "Updated description",
+        "achieved_date": "2024-12-31",
+        "created_at": "2026-01-07T10:00:00.000000Z",
+        "updated_at": "2026-01-07T11:00:00.000000Z"
+    }
+}
+```
+
+**Error Responses:**
+- `404`: Achievement not found or does not belong to the authenticated brahman
+- `422`: Validation error (title is required)
+
+**Note:**
+- `title` is required.
+- Only achievements belonging to the authenticated brahman can be updated.
+- Use `PUT` method for this endpoint.
+
+---
+
+## 35. Delete Serviceman Experience
+
+Delete an experience entry for the authenticated serviceman.
+
+**Endpoint:** `DELETE /api/serviceman/experience/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the experience to delete
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Experience deleted successfully"
+}
+```
+
+**Error Responses:**
+- `404`: Experience not found or does not belong to the authenticated serviceman
+
+**Note:**
+- Only experiences belonging to the authenticated serviceman can be deleted.
+- Use `DELETE` method for this endpoint.
+
+---
+
+## 36. Delete Serviceman Achievement
+
+Delete an achievement entry for the authenticated serviceman.
+
+**Endpoint:** `DELETE /api/serviceman/achievement/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the achievement to delete
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Achievement deleted successfully"
+}
+```
+
+**Error Responses:**
+- `404`: Achievement not found or does not belong to the authenticated serviceman
+
+**Note:**
+- Only achievements belonging to the authenticated serviceman can be deleted.
+- Use `DELETE` method for this endpoint.
+
+---
+
+## 37. Delete Brahman Experience
+
+Delete an experience entry for the authenticated brahman.
+
+**Endpoint:** `DELETE /api/brahman/experience/{id}`
+
+**Authentication:** Required (Brahman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the experience to delete
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Experience deleted successfully"
+}
+```
+
+**Error Responses:**
+- `404`: Experience not found or does not belong to the authenticated brahman
+
+**Note:**
+- Only experiences belonging to the authenticated brahman can be deleted.
+- Use `DELETE` method for this endpoint.
+
+---
+
+## 38. Delete Brahman Achievement
+
+Delete an achievement entry for the authenticated brahman.
+
+**Endpoint:** `DELETE /api/brahman/achievement/{id}`
+
+**Authentication:** Required (Brahman token)
+
+**URL Parameters:**
+- `id` (integer, required): The ID of the achievement to delete
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Achievement deleted successfully"
+}
+```
+
+**Error Responses:**
+- `404`: Achievement not found or does not belong to the authenticated brahman
+
+**Note:**
+- Only achievements belonging to the authenticated brahman can be deleted.
+- Use `DELETE` method for this endpoint.
 
 ---
 
