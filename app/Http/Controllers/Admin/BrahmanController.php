@@ -102,26 +102,6 @@ class BrahmanController extends Controller
             'address' => $brahman->address ?? 'N/A',
             'profile_photo' => $brahman->profile_photo ? asset('storage/' . $brahman->profile_photo) : null,
             'id_proof_image' => $brahman->id_proof_image ? asset('storage/' . $brahman->id_proof_image) : null,
-            'experiences' => $brahman->experiences->map(function($exp) {
-                return [
-                    'id' => $exp->id,
-                    'title' => $exp->title,
-                    'description' => $exp->description,
-                    'years' => $exp->years,
-                    'organization' => $exp->organization,
-                    'start_date' => $exp->start_date ? $exp->start_date->format('Y-m-d') : null,
-                    'end_date' => $exp->end_date ? $exp->end_date->format('Y-m-d') : null,
-                    'is_current' => $exp->is_current,
-                ];
-            }),
-            'achievements' => $brahman->achievements->map(function($ach) {
-                return [
-                    'id' => $ach->id,
-                    'title' => $ach->title,
-                    'description' => $ach->description,
-                    'achieved_date' => $ach->achieved_date ? $ach->achieved_date->format('Y-m-d') : null,
-                ];
-            }),
             'created_at' => $brahman->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $brahman->updated_at->format('Y-m-d H:i:s'),
         ];
