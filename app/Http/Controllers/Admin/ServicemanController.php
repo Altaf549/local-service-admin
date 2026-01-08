@@ -93,32 +93,6 @@ class ServicemanController extends Controller
             'address' => $serviceman->address ?? 'N/A',
             'profile_photo' => $serviceman->profile_photo ? asset('storage/' . $serviceman->profile_photo) : null,
             'id_proof_image' => $serviceman->id_proof_image ? asset('storage/' . $serviceman->id_proof_image) : null,
-            'experiences' => $serviceman->experiences->map(function($exp) {
-                return [
-                    'id' => $exp->id,
-                    'title' => $exp->title,
-                    'description' => $exp->description,
-                    'years' => $exp->years,
-                    'company' => $exp->company,
-                    'start_date' => $exp->start_date ? $exp->start_date->format('Y-m-d') : null,
-                    'end_date' => $exp->end_date ? $exp->end_date->format('Y-m-d') : null,
-                    'is_current' => $exp->is_current,
-                ];
-            }),
-            'achievements' => $serviceman->achievements->map(function($ach) {
-                return [
-                    'id' => $ach->id,
-                    'title' => $ach->title,
-                    'description' => $ach->description,
-                    'achieved_date' => $ach->achieved_date ? $ach->achieved_date->format('Y-m-d') : null,
-                ];
-            }),
-            'services' => $serviceman->services->map(function($service) {
-                return [
-                    'id' => $service->id,
-                    'service_name' => $service->service_name,
-                ];
-            }),
             'created_at' => $serviceman->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $serviceman->updated_at->format('Y-m-d H:i:s'),
         ];

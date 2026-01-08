@@ -78,13 +78,13 @@ function viewDetails(id) {
         url: "{{ route('admin.servicemen.show', ':id') }}".replace(':id', id),
         type: 'GET',
         success: function(response) {
+            console.log("response", response);
             var html = '<div class="row">';
             html += '<div class="col-md-6"><strong>ID:</strong> ' + response.id + '</div>';
             html += '<div class="col-md-6"><strong>Name:</strong> ' + response.name + '</div>';
             html += '<div class="col-md-6"><strong>Email:</strong> ' + response.email + '</div>';
             html += '<div class="col-md-6"><strong>Mobile Number:</strong> ' + response.mobile_number + '</div>';
             html += '<div class="col-md-6"><strong>Phone:</strong> ' + response.phone + '</div>';
-            html += '<div class="col-md-6"><strong>Category:</strong> ' + response.category + '</div>';
             html += '<div class="col-md-6"><strong>Experience:</strong> ' + response.experience + '</div>';
             html += '<div class="col-md-6"><strong>Status:</strong> ' + response.status + '</div>';
             html += '<div class="col-md-6"><strong>Availability:</strong> ' + response.availability_status + '</div>';
