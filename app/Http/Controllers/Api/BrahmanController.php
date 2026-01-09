@@ -269,6 +269,7 @@ class BrahmanController extends Controller
                     'id' => $price->id,
                     'puja_id' => $price->puja_id,
                     'puja_name' => $price->puja->puja_name,
+                    'image' => $price->puja->image ? asset('storage/' . $price->puja->image) : null,
                     'puja_type' => $price->puja->pujaType ? $price->puja->pujaType->type_name : null,
                     'duration' => $price->puja->duration,
                     'price' => $price->price,
