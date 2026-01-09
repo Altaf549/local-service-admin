@@ -150,4 +150,46 @@ class PujaController extends Controller
             'data' => $brahmanPujaPrice->load(['brahman', 'puja']),
         ]);
     }
+
+    public function getPujasByType($typeId)
+    {
+        $pujas = Puja::with('pujaType')
+            ->where('puja_type_id', $typeId)
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($puja) {
+                return [
+                    'id' => $puja->id,
+                    'puja_name' => $puja->puja_name,
+                    'puja_type' => $puja->pujaType ? $puja->pujaType->type_name : null,
+                    'duration' => $puja->duration,
+                    'price' => $puja->price,
+                    'description' => $puja->description,
+                    'image' => $puja->image ? asset('storage/' . $puja->image) : null,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $pujas,
+        ]);
+    }
+
+    public function getPujaTypes()
+    {
+        $types = \App\Models\PujaType::where('status', 'active')
+            ->get()
+            ->map(function ($type) {
+                return [
+                    'id' => $type->id,
+                    'type_name' => $type->type_name,
+                    'description' => $type->description,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $types,
+        ]);
+    }
 }

@@ -248,4 +248,68 @@ class BrahmanController extends Controller
             'message' => 'Achievement deleted successfully',
         ]);
     }
+
+    public function getDetails($id)
+    {
+        $brahman = Brahman::with(['experiences', 'achievements'])
+            ->where('id', $id)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        $pujaPrices = \App\Models\BrahmanPujaPrice::with('puja.pujaType')
+            ->where('brahman_id', $brahman->id)
+            ->get()
+            ->map(function ($price) {
+                return [
+                    'id' => $price->id,
+                    'puja_id' => $price->puja_id,
+                    'puja_name' => $price->puja->puja_name,
+                    'puja_type' => $price->puja->pujaType ? $price->puja->pujaType->type_name : null,
+                    'duration' => $price->puja->duration,
+                    'price' => $price->price,
+                    'description' => $price->puja->description,
+                    'material_file' => $price->material_file ? asset('storage/' . $price->material_file) : null,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $brahman->id,
+                'name' => $brahman->name,
+                'email' => $brahman->email,
+                'mobile_number' => $brahman->mobile_number,
+                'specialization' => $brahman->specialization,
+                'languages' => $brahman->languages,
+                'experience' => $brahman->experience,
+                'charges' => $brahman->charges,
+                'availability_status' => $brahman->availability_status,
+                'government_id' => $brahman->government_id,
+                'address' => $brahman->address,
+                'profile_photo' => $brahman->profile_photo ? asset('storage/' . $brahman->profile_photo) : null,
+                'id_proof_image' => $brahman->id_proof_image ? asset('storage/' . $brahman->id_proof_image) : null,
+                'experiences' => $brahman->experiences ? $brahman->experiences->map(function ($exp) {
+                    return [
+                        'id' => $exp->id,
+                        'title' => $exp->title,
+                        'description' => $exp->description,
+                        'years' => $exp->years,
+                        'organization' => $exp->organization,
+                        'start_date' => $exp->start_date ? $exp->start_date->format('Y-m-d') : null,
+                        'end_date' => $exp->end_date ? $exp->end_date->format('Y-m-d') : null,
+                        'is_current' => $exp->is_current,
+                    ];
+                }) : [],
+                'achievements' => $brahman->achievements ? $brahman->achievements->map(function ($ach) {
+                    return [
+                        'id' => $ach->id,
+                        'title' => $ach->title,
+                        'description' => $ach->description,
+                        'achieved_date' => $ach->achieved_date ? $ach->achieved_date->format('Y-m-d') : null,
+                    ];
+                }) : [],
+                'services' => $pujaPrices,
+            ],
+        ]);
+    }
 }

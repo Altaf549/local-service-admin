@@ -151,4 +151,30 @@ class ServiceController extends Controller
             ], 500);
         }
     }
+
+    public function getServicesByCategory($categoryId)
+    {
+        $services = Service::with('category')
+            ->where('category_id', $categoryId)
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($service) {
+                return [
+                    'id' => $service->id,
+                    'service_name' => $service->service_name,
+                    'category' => [
+                        'id' => $service->category->id,
+                        'category_name' => $service->category->category_name,
+                    ],
+                    'price' => $service->price,
+                    'description' => $service->description,
+                    'image' => $service->image ? asset('storage/' . $service->image) : null,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $services,
+        ]);
+    }
 }

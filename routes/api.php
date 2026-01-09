@@ -27,12 +27,16 @@ Route::get('/service-categories', [ServiceCategoryController::class, 'index']);
 Route::get('/service-categories/{id}', [ServiceCategoryController::class, 'show']);
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/{id}', [ServiceController::class, 'show']);
+Route::get('/services/by-category/{categoryId}', [ServiceController::class, 'getServicesByCategory']);
 Route::get('/puja-types', [PujaTypeController::class, 'index']);
 Route::get('/puja-types/{id}', [PujaTypeController::class, 'show']);
 Route::get('/pujas', [PujaController::class, 'index']);
 Route::get('/pujas/{id}', [PujaController::class, 'show']);
+Route::get('/pujas/by-type/{typeId}', [PujaController::class, 'getPujasByType']);
 Route::get('/servicemen', [ServicemanController::class, 'index']);
+Route::get('/servicemen/details/{id}', [ServicemanController::class, 'getDetails']);
 Route::get('/brahmans', [BrahmanController::class, 'index']);
+Route::get('/brahmans/details/{id}', [BrahmanController::class, 'getDetails']);
 
 // Protected Routes (require authentication)
 Route::middleware('auth:sanctum')->group(function () {

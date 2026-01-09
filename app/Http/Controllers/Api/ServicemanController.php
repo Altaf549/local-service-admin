@@ -251,4 +251,98 @@ class ServicemanController extends Controller
             'message' => 'Achievement deleted successfully',
         ]);
     }
+
+    public function getDetails($id)
+    {
+        $serviceman = Serviceman::with(['experiences', 'achievements', 'category'])
+            ->where('id', $id)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        // Get services from serviceman_service_prices table (custom prices)
+        $servicesWithPrices = \App\Models\ServicemanServicePrice::with('service.category')
+            ->where('serviceman_id', $serviceman->id)
+            ->get()
+            ->map(function ($price) {
+                return [
+                    'id' => $price->id,
+                    'service_id' => $price->service_id,
+                    'service_name' => $price->service->service_name,
+                    'category' => $price->service->category ? [
+                        'id' => $price->service->category->id,
+                        'category_name' => $price->service->category->category_name,
+                    ] : null,
+                    'duration' => $price->service->description,
+                    'price' => $price->price,
+                    'description' => $price->service->description,
+                    'image' => $price->service->image ? asset('storage/' . $price->service->image) : null,
+                ];
+            });
+
+        // Get services from pivot table (default prices)
+        $servicesFromPivot = $serviceman->services()
+            ->with('category')
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($service) {
+                return [
+                    'id' => null, // No price record ID
+                    'service_id' => $service->id,
+                    'service_name' => $service->service_name,
+                    'category' => $service->category ? [
+                        'id' => $service->category->id,
+                        'category_name' => $service->category->category_name,
+                    ] : null,
+                    'duration' => $service->description,
+                    'price' => $service->price,
+                    'description' => $service->description,
+                    'image' => $service->image ? asset('storage/' . $service->image) : null,
+                ];
+            });
+
+        // Merge both collections and remove duplicates by service_id
+        $allServices = $servicesWithPrices->concat($servicesFromPivot)->unique('service_id');
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $serviceman->id,
+                'name' => $serviceman->name,
+                'email' => $serviceman->email,
+                'phone' => $serviceman->phone,
+                'mobile_number' => $serviceman->mobile_number,
+                'category' => $serviceman->category ? [
+                    'id' => $serviceman->category->id,
+                    'category_name' => $serviceman->category->category_name,
+                ] : null,
+                'experience' => $serviceman->experience,
+                'availability_status' => $serviceman->availability_status,
+                'government_id' => $serviceman->government_id,
+                'address' => $serviceman->address,
+                'profile_photo' => $serviceman->profile_photo ? asset('storage/' . $serviceman->profile_photo) : null,
+                'id_proof_image' => $serviceman->id_proof_image ? asset('storage/' . $serviceman->id_proof_image) : null,
+                'experiences' => $serviceman->experiences ? $serviceman->experiences->map(function ($exp) {
+                    return [
+                        'id' => $exp->id,
+                        'title' => $exp->title,
+                        'description' => $exp->description,
+                        'years' => $exp->years,
+                        'company' => $exp->company,
+                        'start_date' => $exp->start_date ? $exp->start_date->format('Y-m-d') : null,
+                        'end_date' => $exp->end_date ? $exp->end_date->format('Y-m-d') : null,
+                        'is_current' => $exp->is_current,
+                    ];
+                }) : [],
+                'achievements' => $serviceman->achievements ? $serviceman->achievements->map(function ($ach) {
+                    return [
+                        'id' => $ach->id,
+                        'title' => $ach->title,
+                        'description' => $ach->description,
+                        'achieved_date' => $ach->achieved_date ? $ach->achieved_date->format('Y-m-d') : null,
+                    ];
+                }) : [],
+                'services' => $allServices,
+            ],
+        ]);
+    }
 }
