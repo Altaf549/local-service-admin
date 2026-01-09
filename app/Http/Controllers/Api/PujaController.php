@@ -39,8 +39,13 @@ class PujaController extends Controller
     {
         $puja = Puja::with('pujaType')->findOrFail($id);
 
-        // Get all active brahmans for this puja
-        $brahmans = \App\Models\Brahman::where('status', 'active')
+        // Get only brahmans who have custom prices for this specific puja
+        $brahmanIdsWithPrices = \App\Models\BrahmanPujaPrice::where('puja_id', $id)
+            ->pluck('brahman_id')
+            ->toArray();
+
+        $brahmans = \App\Models\Brahman::whereIn('id', $brahmanIdsWithPrices)
+            ->where('status', 'active')
             ->where('availability_status', 'available')
             ->get();
 
@@ -71,13 +76,14 @@ class PujaController extends Controller
                         'languages' => $brahman->languages,
                         'experience' => $brahman->experience,
                         'charges' => $brahman->charges,
+                        'mobile_number' => $brahman->mobile_number,
                         'profile_photo' => $brahman->profile_photo ? asset('storage/' . $brahman->profile_photo) : null,
                         'availability_status' => $brahman->availability_status,
                         'price' => $customPrice ? $customPrice->price : $puja->price,
                         'custom_price' => $customPrice ? true : false,
                         'material_file' => $customPrice && $customPrice->material_file ? asset('storage/' . $customPrice->material_file) : ($puja->material_file ? asset('storage/' . $puja->material_file) : null),
                     ];
-                }),
+                })->values(),
             ],
         ]);
     }
