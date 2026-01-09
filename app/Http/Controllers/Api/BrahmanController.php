@@ -251,7 +251,7 @@ class BrahmanController extends Controller
 
     public function getDetails($id)
     {
-        $brahman = Brahman::with(['experiences', 'category'])
+        $brahman = Brahman::with(['experiences'])
             ->where('id', $id)
             ->where('status', 'active')
             ->firstOrFail();
