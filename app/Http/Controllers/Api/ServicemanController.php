@@ -254,10 +254,15 @@ class ServicemanController extends Controller
 
     public function getDetails($id)
     {
-        $serviceman = Serviceman::with(['experiences', 'achievements', 'category'])
+        $serviceman = Serviceman::with(['experiences', 'category'])
             ->where('id', $id)
             ->where('status', 'active')
             ->firstOrFail();
+
+        // Get achievements directly to ensure they load
+        $achievements = \App\Models\ServicemanAchievement::where('serviceman_id', $serviceman->id)
+            ->orderBy('achieved_date', 'desc')
+            ->get();
 
         // Get services from serviceman_service_prices table (custom prices)
         $servicesWithPrices = \App\Models\ServicemanServicePrice::with('service.category')
@@ -333,14 +338,14 @@ class ServicemanController extends Controller
                         'is_current' => $exp->is_current,
                     ];
                 }) : [],
-                'achievements' => $serviceman->achievements ? $serviceman->achievements->map(function ($ach) {
+                'achievements' => $achievements->map(function ($ach) {
                     return [
                         'id' => $ach->id,
                         'title' => $ach->title,
                         'description' => $ach->description,
                         'achieved_date' => $ach->achieved_date ? $ach->achieved_date->format('Y-m-d') : null,
                     ];
-                }) : [],
+                }),
                 'services' => $allServices,
             ],
         ]);
