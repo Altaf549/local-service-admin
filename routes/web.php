@@ -18,11 +18,17 @@ use App\Http\Controllers\Admin\ServicemanExperienceController;
 use App\Http\Controllers\Admin\ServicemanAchievementController;
 use App\Http\Controllers\Admin\BrahmanExperienceController;
 use App\Http\Controllers\Admin\BrahmanAchievementController;
+use App\Http\Controllers\PageController;
 
 // Public routes
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Public Pages
+Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('pages.privacy');
+Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('pages.terms');
+Route::get('/about-us', [PageController::class, 'about'])->name('pages.about');
 
 // Admin Authentication
 Route::prefix('admin')->name('admin.')->group(function () {
