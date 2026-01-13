@@ -67,7 +67,7 @@ class Brahman extends Authenticatable
     public function getIdProofImageUrlAttribute(): string
     {
         if (!$this->id_proof_image) {
-            return asset('images/default-document.png');
+            return '';
         }
 
         // If it's already a full URL, return as is

@@ -58,7 +58,7 @@ class User extends Authenticatable
     public function getProfilePhotoUrlAttribute(): string
     {
         if (!$this->profile_photo) {
-            return asset('images/default-avatar.png');
+            return '';
         }
 
         // If it's already a full URL, return as is
