@@ -218,4 +218,65 @@ class AuthController extends Controller
             'message' => 'Logged out successfully',
         ]);
     }
+
+    // Delete User Account
+    public function deleteUserAccount(Request $request)
+    {
+        $user = $request->user();
+        
+        // Delete user's tokens
+        $user->tokens()->delete();
+        
+        // Delete user account
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User account deleted successfully',
+        ]);
+    }
+
+    // Delete Serviceman Account
+    public function deleteServicemanAccount(Request $request)
+    {
+        $serviceman = $request->user();
+        
+        // Delete related records
+        $serviceman->servicemanServicePrices()->delete();
+        $serviceman->experiences()->delete();
+        $serviceman->achievements()->delete();
+        $serviceman->services()->detach();
+        
+        // Delete serviceman's tokens
+        $serviceman->tokens()->delete();
+        
+        // Delete serviceman account
+        $serviceman->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Serviceman account deleted successfully',
+        ]);
+    }
+
+    // Delete Brahman Account
+    public function deleteBrahmanAccount(Request $request)
+    {
+        $brahman = $request->user();
+        
+        // Delete related records
+        $brahman->experiences()->delete();
+        $brahman->achievements()->delete();
+        
+        // Delete brahman's tokens
+        $brahman->tokens()->delete();
+        
+        // Delete brahman account
+        $brahman->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Brahman account deleted successfully',
+        ]);
+    }
 }

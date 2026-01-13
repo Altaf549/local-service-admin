@@ -43,6 +43,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
     
+    // Delete Account Routes
+    Route::delete('/user/delete-account', [AuthController::class, 'deleteUserAccount']);
+    Route::delete('/serviceman/delete-account', [AuthController::class, 'deleteServicemanAccount']);
+    Route::delete('/brahman/delete-account', [AuthController::class, 'deleteBrahmanAccount']);
+    
     // User Profile
     Route::post('/user/profile/update', [ProfileController::class, 'updateProfile']);
     

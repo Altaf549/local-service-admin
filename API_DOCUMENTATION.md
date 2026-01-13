@@ -99,7 +99,9 @@ Login with user credentials.
             "email": "john@example.com",
             "mobile_number": "1234567890",
             "role": "user",
-            "status": "active"
+            "status": "active",
+            "profile_photo": "profile.jpg",
+            "profile_photo_url": "http://your-domain.com/storage/profile.jpg"
         },
         "token": "2|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     }
@@ -194,7 +196,11 @@ Login with serviceman credentials.
             "email": "serviceman@example.com",
             "mobile_number": "9876543210",
             "status": "inactive",
-            "availability_status": "available"
+            "availability_status": "available",
+            "profile_photo": "serviceman.jpg",
+            "profile_photo_url": "http://your-domain.com/storage/serviceman.jpg",
+            "id_proof_image": "id_proof.jpg",
+            "id_proof_image_url": "http://your-domain.com/storage/id_proof.jpg"
         },
         "token": "3|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     }
@@ -273,7 +279,11 @@ Login with brahman credentials.
             "email": "brahman@example.com",
             "mobile_number": "9876543211",
             "status": "inactive",
-            "availability_status": "available"
+            "availability_status": "available",
+            "profile_photo": "brahman.jpg",
+            "profile_photo_url": "http://your-domain.com/storage/brahman.jpg",
+            "id_proof_image": "brahman_id.jpg",
+            "id_proof_image_url": "http://your-domain.com/storage/brahman_id.jpg"
         },
         "token": "4|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     }
@@ -1645,6 +1655,83 @@ Logout and revoke current access token.
     "message": "Logged out successfully"
 }
 ```
+
+---
+
+## Delete User Account
+
+Permanently delete the authenticated user's account and all associated data.
+
+**Endpoint:** `DELETE /api/user/delete-account`
+
+**Authentication:** Required
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "User account deleted successfully"
+}
+```
+
+**Note:**
+- This action is irreversible
+- All user tokens will be revoked
+- User account will be permanently deleted
+
+---
+
+## Delete Serviceman Account
+
+Permanently delete the authenticated serviceman's account and all associated data.
+
+**Endpoint:** `DELETE /api/serviceman/delete-account`
+
+**Authentication:** Required
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Serviceman account deleted successfully"
+}
+```
+
+**Note:**
+- This action is irreversible
+- All serviceman tokens will be revoked
+- All related data will be deleted:
+  - Service prices
+  - Experiences
+  - Achievements
+  - Service associations
+- Serviceman account will be permanently deleted
+
+---
+
+## Delete Brahman Account
+
+Permanently delete the authenticated brahman's account and all associated data.
+
+**Endpoint:** `DELETE /api/brahman/delete-account`
+
+**Authentication:** Required
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Brahman account deleted successfully"
+}
+```
+
+**Note:**
+- This action is irreversible
+- All brahman tokens will be revoked
+- All related data will be deleted:
+  - Experiences
+  - Achievements
+- Brahman account will be permanently deleted
 
 ---
 
