@@ -71,11 +71,15 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        // Prepare user data with full profile photo URL
+        $userData = $user->toArray();
+        $userData['profile_photo_url'] = $user->profile_photo_url;
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'user' => $user,
+                'user' => $userData,
                 'token' => $token,
             ],
         ]);
@@ -128,11 +132,16 @@ class AuthController extends Controller
 
         $token = $serviceman->createToken('serviceman_token')->plainTextToken;
 
+        // Prepare serviceman data with full image URLs
+        $servicemanData = $serviceman->toArray();
+        $servicemanData['profile_photo_url'] = $serviceman->profile_photo_url;
+        $servicemanData['id_proof_image_url'] = $serviceman->id_proof_image_url;
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'serviceman' => $serviceman,
+                'serviceman' => $servicemanData,
                 'token' => $token,
             ],
         ]);
@@ -184,11 +193,16 @@ class AuthController extends Controller
 
         $token = $brahman->createToken('brahman_token')->plainTextToken;
 
+        // Prepare brahman data with full image URLs
+        $brahmanData = $brahman->toArray();
+        $brahmanData['profile_photo_url'] = $brahman->profile_photo_url;
+        $brahmanData['id_proof_image_url'] = $brahman->id_proof_image_url;
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'brahman' => $brahman,
+                'brahman' => $brahmanData,
                 'token' => $token,
             ],
         ]);

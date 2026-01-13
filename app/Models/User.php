@@ -51,4 +51,27 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the full URL for the profile photo.
+     */
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        if (!$this->profile_photo) {
+            return asset('images/default-avatar.png');
+        }
+
+        // If it's already a full URL, return as is
+        if (filter_var($this->profile_photo, FILTER_VALIDATE_URL)) {
+            return $this->profile_photo;
+        }
+
+        // If it starts with /storage/, convert to full URL
+        if (str_starts_with($this->profile_photo, '/storage/')) {
+            return url($this->profile_photo);
+        }
+
+        // If it's a relative path, convert to full URL
+        return asset('storage/' . $this->profile_photo);
+    }
 }
