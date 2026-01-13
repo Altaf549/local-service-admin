@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ServicemanExperienceController;
 use App\Http\Controllers\Admin\ServicemanAchievementController;
 use App\Http\Controllers\Admin\BrahmanExperienceController;
 use App\Http\Controllers\Admin\BrahmanAchievementController;
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\PageController;
 
 // Public routes
@@ -115,6 +116,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('brahman-achievements/{id}', [BrahmanAchievementController::class, 'show'])->name('brahman-achievements.show');
     Route::post('brahman-achievements/{id}', [BrahmanAchievementController::class, 'update'])->name('brahman-achievements.update');
     Route::post('brahman-achievements/{id}/delete', [BrahmanAchievementController::class, 'destroy'])->name('brahman-achievements.destroy');
+    
+    // Bookings
+    Route::get('bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
+    Route::put('bookings/{id}/status', [BookingController::class, 'updateStatus'])->name('bookings.update-status');
     
     // Settings
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');

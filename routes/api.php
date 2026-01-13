@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\PujaController;
 use App\Http\Controllers\Api\ServicemanController;
 use App\Http\Controllers\Api\BrahmanController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\ProfileController;
 
 // Public Routes
@@ -47,6 +48,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/user/delete-account', [AuthController::class, 'deleteUserAccount']);
     Route::delete('/serviceman/delete-account', [AuthController::class, 'deleteServicemanAccount']);
     Route::delete('/brahman/delete-account', [AuthController::class, 'deleteBrahmanAccount']);
+    
+    // Booking Routes
+    Route::post('/bookings/service', [BookingController::class, 'createServiceBooking']);
+    Route::post('/bookings/puja', [BookingController::class, 'createPujaBooking']);
+    Route::get('/bookings', [BookingController::class, 'getUserBookings']);
+    Route::get('/bookings/{id}', [BookingController::class, 'getBookingDetails']);
+    Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancelBooking']);
+    
+    // Admin Booking Routes
+    Route::get('/admin/bookings', [BookingController::class, 'getAllBookings']);
+    Route::put('/admin/bookings/{id}/status', [BookingController::class, 'updateBookingStatus']);
     
     // User Profile
     Route::post('/user/profile/update', [ProfileController::class, 'updateProfile']);

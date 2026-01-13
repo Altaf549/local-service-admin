@@ -185,6 +185,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}" href="{{ route('admin.bookings.index') }}">
+                                <i class="fas fa-calendar-check me-2"></i> Bookings
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.servicemen.*') || request()->routeIs('admin.serviceman-service-prices.*') || request()->routeIs('admin.serviceman-experiences.*') || request()->routeIs('admin.serviceman-achievements.*') ? 'active' : '' }}" data-bs-toggle="collapse" href="#servicemanSubmenu" role="button" aria-expanded="{{ request()->routeIs('admin.servicemen.*') || request()->routeIs('admin.serviceman-service-prices.*') || request()->routeIs('admin.serviceman-experiences.*') || request()->routeIs('admin.serviceman-achievements.*') ? 'true' : 'false' }}" aria-controls="servicemanSubmenu">
                                 <i class="fas fa-user-tie me-2"></i> Serviceman Data
                                 <i class="fas fa-chevron-down ms-auto"></i>

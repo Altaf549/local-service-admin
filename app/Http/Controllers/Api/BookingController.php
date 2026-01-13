@@ -1,0 +1,241 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\Service;
+use App\Models\Puja;
+use App\Models\Serviceman;
+use App\Models\Brahman;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
+class BookingController extends Controller
+{
+    // Create Service Booking
+    public function createServiceBooking(Request $request)
+    {
+        $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'serviceman_id' => 'required|exists:servicemen,id',
+            'booking_date' => 'required|date|after_or_equal:today',
+            'booking_time' => 'required|string',
+            'address' => 'required|string',
+            'mobile_number' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+
+        $user = $request->user();
+        $service = Service::find($request->service_id);
+        $serviceman = Serviceman::find($request->serviceman_id);
+
+        // Check if serviceman is available
+        if ($serviceman->availability_status !== 'available') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Serviceman is not available for booking',
+            ], 400);
+        }
+
+        $booking = Booking::create([
+            'user_id' => $user->id,
+            'booking_type' => 'service',
+            'service_id' => $request->service_id,
+            'serviceman_id' => $request->serviceman_id,
+            'booking_date' => $request->booking_date,
+            'booking_time' => $request->booking_time,
+            'address' => $request->address,
+            'mobile_number' => $request->mobile_number,
+            'notes' => $request->notes,
+            'total_amount' => 0, // COD only, no amount
+            'payment_method' => 'cod',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Service booking created successfully',
+            'data' => [
+                'booking' => $booking->load(['user', 'service', 'serviceman']),
+            ],
+        ], 201);
+    }
+
+    // Create Puja Booking
+    public function createPujaBooking(Request $request)
+    {
+        $request->validate([
+            'puja_id' => 'required|exists:pujas,id',
+            'brahman_id' => 'required|exists:brahmans,id',
+            'booking_date' => 'required|date|after_or_equal:today',
+            'booking_time' => 'required|string',
+            'address' => 'required|string',
+            'mobile_number' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+
+        $user = $request->user();
+        $puja = Puja::find($request->puja_id);
+        $brahman = Brahman::find($request->brahman_id);
+
+        // Check if brahman is available
+        if ($brahman->availability_status !== 'available') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Brahman is not available for booking',
+            ], 400);
+        }
+
+        $booking = Booking::create([
+            'user_id' => $user->id,
+            'booking_type' => 'puja',
+            'puja_id' => $request->puja_id,
+            'brahman_id' => $request->brahman_id,
+            'booking_date' => $request->booking_date,
+            'booking_time' => $request->booking_time,
+            'address' => $request->address,
+            'mobile_number' => $request->mobile_number,
+            'notes' => $request->notes,
+            'total_amount' => 0, // COD only, no amount
+            'payment_method' => 'cod',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Puja booking created successfully',
+            'data' => [
+                'booking' => $booking->load(['user', 'puja', 'brahman']),
+            ],
+        ], 201);
+    }
+
+    // Get User Bookings
+    public function getUserBookings(Request $request)
+    {
+        $user = $request->user();
+        
+        $bookings = Booking::with(['user', 'service', 'puja', 'serviceman', 'brahman'])
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'bookings' => $bookings,
+            ],
+        ]);
+    }
+
+    // Get Booking Details
+    public function getBookingDetails(Request $request, $id)
+    {
+        $user = $request->user();
+        
+        $booking = Booking::with(['user', 'service', 'puja', 'serviceman', 'brahman'])
+            ->where('id', $id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'booking' => $booking,
+            ],
+        ]);
+    }
+
+    // Cancel Booking
+    public function cancelBooking(Request $request, $id)
+    {
+        $user = $request->user();
+        
+        $booking = Booking::where('id', $id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found',
+            ], 404);
+        }
+
+        if ($booking->status === 'cancelled') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking is already cancelled',
+            ], 400);
+        }
+
+        if (in_array($booking->status, ['in_progress', 'completed'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot cancel booking that is ' . str_replace('_', ' ', $booking->status),
+            ], 400);
+        }
+
+        $booking->update(['status' => 'cancelled']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking cancelled successfully',
+            'data' => [
+                'booking' => $booking->load(['user', 'service', 'puja', 'serviceman', 'brahman']),
+            ],
+        ]);
+    }
+
+    // Get All Bookings (Admin)
+    public function getAllBookings(Request $request)
+    {
+        $bookings = Booking::with(['user', 'service', 'puja', 'serviceman', 'brahman'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'bookings' => $bookings,
+            ],
+        ]);
+    }
+
+    // Update Booking Status (Admin)
+    public function updateBookingStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,confirmed,in_progress,completed,cancelled',
+            'payment_status' => 'sometimes|in:pending,paid',
+        ]);
+
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found',
+            ], 404);
+        }
+
+        $booking->update([
+            'status' => $request->status,
+            'payment_status' => $request->payment_status ?? $booking->payment_status,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking status updated successfully',
+            'data' => [
+                'booking' => $booking->load(['user', 'service', 'puja', 'serviceman', 'brahman']),
+            ],
+        ]);
+    }
+}
