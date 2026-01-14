@@ -1743,6 +1743,8 @@ Create a new service booking.
 
 **Authentication:** Required
 
+**Note:** The `total_amount` is automatically calculated from the `serviceman_service_prices` table based on the selected serviceman and service combination. If no price is found, it defaults to 0.
+
 **Request Body:**
 ```json
 {
@@ -1776,7 +1778,7 @@ Create a new service booking.
             "status": "pending",
             "payment_status": "pending",
             "payment_method": "cod",
-            "total_amount": "0.00",
+            "total_amount": "1500.00",
             "created_at": "2024-01-01T10:00:00.000000Z",
             "updated_at": "2024-01-01T10:00:00.000000Z",
             "user": {...},
@@ -1796,6 +1798,8 @@ Create a new puja booking.
 **Endpoint:** `POST /api/bookings/puja`
 
 **Authentication:** Required
+
+**Note:** The `total_amount` is automatically calculated from the `brahman_puja_prices` table based on the selected brahman and puja combination. If no price is found, it defaults to 0.
 
 **Request Body:**
 ```json
@@ -1830,7 +1834,7 @@ Create a new puja booking.
             "status": "pending",
             "payment_status": "pending",
             "payment_method": "cod",
-            "total_amount": "0.00",
+            "total_amount": "1500.00",
             "created_at": "2024-01-01T10:00:00.000000Z",
             "updated_at": "2024-01-01T10:00:00.000000Z",
             "user": {...},
@@ -1902,7 +1906,7 @@ Get details of a specific booking.
             "status": "pending",
             "payment_status": "pending",
             "payment_method": "cod",
-            "total_amount": "0.00",
+            "total_amount": "1500.00",
             "created_at": "2024-01-01T10:00:00.000000Z",
             "updated_at": "2024-01-01T10:00:00.000000Z",
             "user": {...},

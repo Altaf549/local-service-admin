@@ -8,6 +8,8 @@ use App\Models\Service;
 use App\Models\Puja;
 use App\Models\Serviceman;
 use App\Models\Brahman;
+use App\Models\ServicemanServicePrice;
+use App\Models\BrahmanPujaPrice;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -38,6 +40,13 @@ class BookingController extends Controller
             ], 400);
         }
 
+        // Get price from serviceman_service_prices table
+        $servicePrice = ServicemanServicePrice::where('serviceman_id', $request->serviceman_id)
+            ->where('service_id', $request->service_id)
+            ->first();
+
+        $totalAmount = $servicePrice ? $servicePrice->price : 0;
+
         $booking = Booking::create([
             'user_id' => $user->id,
             'booking_type' => 'service',
@@ -48,7 +57,7 @@ class BookingController extends Controller
             'address' => $request->address,
             'mobile_number' => $request->mobile_number,
             'notes' => $request->notes,
-            'total_amount' => 0, // COD only, no amount
+            'total_amount' => $totalAmount,
             'payment_method' => 'cod',
         ]);
 
@@ -86,6 +95,13 @@ class BookingController extends Controller
             ], 400);
         }
 
+        // Get price from brahman_puja_prices table
+        $pujaPrice = BrahmanPujaPrice::where('brahman_id', $request->brahman_id)
+            ->where('puja_id', $request->puja_id)
+            ->first();
+
+        $totalAmount = $pujaPrice ? $pujaPrice->price : 0;
+
         $booking = Booking::create([
             'user_id' => $user->id,
             'booking_type' => 'puja',
@@ -96,7 +112,7 @@ class BookingController extends Controller
             'address' => $request->address,
             'mobile_number' => $request->mobile_number,
             'notes' => $request->notes,
-            'total_amount' => 0, // COD only, no amount
+            'total_amount' => $totalAmount,
             'payment_method' => 'cod',
         ]);
 

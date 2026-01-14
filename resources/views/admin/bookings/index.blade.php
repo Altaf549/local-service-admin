@@ -62,7 +62,7 @@
                             <td>{{ $booking->booking_date->format('M d, Y') }}</td>
                             <td>{{ $booking->booking_time }}</td>
                             <td>
-                                <span class="badge bg-{{ $this->getStatusColor($booking->status) }}">
+                                <span class="badge bg-{{ getStatusColor($booking->status) }}">
                                     {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
                                 </span>
                             </td>

@@ -47,7 +47,7 @@
                     <tr>
                         <td><strong>Status:</strong></td>
                         <td>
-                            <span class="badge bg-{{ $this->getStatusColor($booking->status) }}">
+                            <span class="badge bg-{{ getStatusColor($booking->status) }}">
                                 {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
                             </span>
                         </td>
@@ -148,10 +148,6 @@
                         <tr>
                             <td><strong>Mobile:</strong></td>
                             <td>{{ $booking->serviceman->mobile_number ?? 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Experience:</strong></td>
-                            <td>{{ $booking->serviceman->experience ?? 'N/A' }} years</td>
                         </tr>
                     </table>
                 @else
