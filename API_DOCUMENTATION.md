@@ -2514,6 +2514,118 @@ curl -X POST http://your-domain.com/api/serviceman/profile/update \
 
 ---
 
+## 22. Update Serviceman Profile
+
+Update authenticated serviceman's profile information.
+
+**Endpoint:** `POST /api/serviceman/simple-profile/update`
+
+**Authentication:** Required (Serviceman token)
+
+**Request Body (multipart/form-data):**
+```
+current_password: "current_password123"
+name: "John Doe"
+email: "john@example.com"
+mobile_number: "9876543210"
+address: "123 Main St, City, State"
+new_password: "newpassword123" (optional)
+profile_photo: [file] (optional)
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Serviceman profile updated successfully",
+    "data": {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "mobile_number": "9876543210",
+        "address": "123 Main St, City, State",
+        "profile_photo": "servicemen/profiles/filename.jpg",
+        "profile_photo_url": "http://localhost:8000/storage/servicemen/profiles/filename.jpg",
+        "created_at": "2024-01-01T10:00:00.000000Z",
+        "updated_at": "2024-01-01T10:00:00.000000Z"
+    }
+}
+```
+
+**Error Response (422):**
+```json
+{
+    "message": "Current password is incorrect",
+    "errors": {
+        "current_password": ["Current password is incorrect"]
+    }
+}
+```
+
+**Note:**
+- `current_password` is mandatory for security
+- `new_password` is optional - only updates if provided
+- `profile_photo` should be jpeg, png, or jpg (max 2MB)
+- Email and mobile number must be unique among servicemen
+
+---
+
+## 23. Update Brahman Profile
+
+Update authenticated brahman's profile information.
+
+**Endpoint:** `POST /api/brahman/simple-profile/update`
+
+**Authentication:** Required (Brahman token)
+
+**Request Body (multipart/form-data):**
+```
+current_password: "current_password123"
+name: "Rajesh Sharma"
+email: "rajesh@example.com"
+mobile_number: "9876543210"
+address: "123 Temple Road, City, State"
+new_password: "newpassword123" (optional)
+profile_photo: [file] (optional)
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Brahman profile updated successfully",
+    "data": {
+        "id": 1,
+        "name": "Rajesh Sharma",
+        "email": "rajesh@example.com",
+        "mobile_number": "9876543210",
+        "address": "123 Temple Road, City, State",
+        "profile_photo": "brahmans/profiles/filename.jpg",
+        "profile_photo_url": "http://localhost:8000/storage/brahmans/profiles/filename.jpg",
+        "created_at": "2024-01-01T10:00:00.000000Z",
+        "updated_at": "2024-01-01T10:00:00.000000Z"
+    }
+}
+```
+
+**Error Response (422):**
+```json
+{
+    "message": "Current password is incorrect",
+    "errors": {
+        "current_password": ["Current password is incorrect"]
+    }
+}
+```
+
+**Note:**
+- `current_password` is mandatory for security
+- `new_password` is optional - only updates if provided
+- `profile_photo` should be jpeg, png, or jpg (max 2MB)
+- Email and mobile number must be unique among brahmans
+
+---
+
 ## Support
 
 For API support or questions, please contact the development team.

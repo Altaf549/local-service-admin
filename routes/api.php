@@ -65,6 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // User Profile
     Route::post('/user/profile/update', [ProfileController::class, 'updateProfile']);
+    Route::post('/serviceman/simple-profile/update', [ProfileController::class, 'updateServicemanProfile']);
+    Route::post('/brahman/simple-profile/update', [ProfileController::class, 'updateBrahmanProfile']);
     
     // Service Price Update (Admin only or authorized)
     Route::post('/services/price/update/{id}', [ServiceController::class, 'updatePrice']);
@@ -73,7 +75,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pujas/price/update/{id}', [PujaController::class, 'updatePrice']);
     
     // Serviceman Profile Management
-    Route::post('/serviceman/profile/update', [ServicemanController::class, 'updateProfile']);
     Route::get('/serviceman/experiences', [ServicemanController::class, 'getExperiences']);
     Route::get('/serviceman/achievements', [ServicemanController::class, 'getAchievements']);
     Route::post('/serviceman/experience/add', [ServicemanController::class, 'addExperience']);
