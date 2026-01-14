@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/bookings/puja', [BookingController::class, 'createPujaBooking']);
     Route::get('/bookings', [BookingController::class, 'getUserBookings']);
     Route::get('/bookings/{id}', [BookingController::class, 'getBookingDetails']);
+    Route::put('/bookings/{id}', [BookingController::class, 'updateBooking']);
     Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancelBooking']);
     
     // Admin Booking Routes

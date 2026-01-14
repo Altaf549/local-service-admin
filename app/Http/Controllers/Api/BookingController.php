@@ -152,9 +152,63 @@ class BookingController extends Controller
         ]);
     }
 
-    // Cancel Booking
+    // Update Booking
+    public function updateBooking(Request $request, $id)
+    {
+        $request->validate([
+            'booking_date' => 'sometimes|required|date|after_or_equal:today',
+            'booking_time' => 'sometimes|required|string',
+            'address' => 'sometimes|required|string',
+            'mobile_number' => 'sometimes|required|string',
+            'notes' => 'sometimes|nullable|string',
+        ]);
+
+        $user = $request->user();
+        
+        $booking = Booking::where('id', $id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found',
+            ], 404);
+        }
+
+        // Check if booking can be updated (only pending or confirmed)
+        if (!in_array($booking->status, ['pending', 'confirmed'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot update booking that is ' . str_replace('_', ' ', $booking->status),
+            ], 400);
+        }
+
+        // Update booking details
+        $booking->update($request->only([
+            'booking_date',
+            'booking_time', 
+            'address',
+            'mobile_number',
+            'notes'
+        ]));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking updated successfully',
+            'data' => [
+                'booking' => $booking->load(['user', 'service', 'puja', 'serviceman', 'brahman']),
+            ],
+        ]);
+    }
+
+    // Cancel Booking (Enhanced version)
     public function cancelBooking(Request $request, $id)
     {
+        $request->validate([
+            'cancellation_reason' => 'sometimes|nullable|string|max:500',
+        ]);
+
         $user = $request->user();
         
         $booking = Booking::where('id', $id)
@@ -182,7 +236,14 @@ class BookingController extends Controller
             ], 400);
         }
 
-        $booking->update(['status' => 'cancelled']);
+        // Update booking with cancellation reason if provided
+        $updateData = ['status' => 'cancelled'];
+        if ($request->has('cancellation_reason')) {
+            $updateData['notes'] = ($booking->notes ? $booking->notes . "\n\n" : '') . 
+                               "Cancellation Reason: " . $request->cancellation_reason;
+        }
+
+        $booking->update($updateData);
 
         return response()->json([
             'success' => true,

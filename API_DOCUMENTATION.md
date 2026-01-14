@@ -1735,6 +1735,271 @@ Permanently delete the authenticated brahman's account and all associated data.
 
 ---
 
+## Create Service Booking
+
+Create a new service booking.
+
+**Endpoint:** `POST /api/bookings/service`
+
+**Authentication:** Required
+
+**Request Body:**
+```json
+{
+    "service_id": 1,
+    "serviceman_id": 1,
+    "booking_date": "2024-12-25",
+    "booking_time": "10:00 AM",
+    "address": "123 Main St, City, State",
+    "mobile_number": "9876543210",
+    "notes": "Special instructions for service"
+}
+```
+
+**Response (201):**
+```json
+{
+    "success": true,
+    "message": "Service booking created successfully",
+    "data": {
+        "booking": {
+            "id": 1,
+            "user_id": 1,
+            "booking_type": "service",
+            "service_id": 1,
+            "serviceman_id": 1,
+            "booking_date": "2024-12-25T00:00:00.000000Z",
+            "booking_time": "10:00 AM",
+            "address": "123 Main St, City, State",
+            "mobile_number": "9876543210",
+            "notes": "Special instructions for service",
+            "status": "pending",
+            "payment_status": "pending",
+            "payment_method": "cod",
+            "total_amount": "0.00",
+            "created_at": "2024-01-01T10:00:00.000000Z",
+            "updated_at": "2024-01-01T10:00:00.000000Z",
+            "user": {...},
+            "service": {...},
+            "serviceman": {...}
+        }
+    }
+}
+```
+
+---
+
+## Create Puja Booking
+
+Create a new puja booking.
+
+**Endpoint:** `POST /api/bookings/puja`
+
+**Authentication:** Required
+
+**Request Body:**
+```json
+{
+    "puja_id": 1,
+    "brahman_id": 1,
+    "booking_date": "2024-12-25",
+    "booking_time": "10:00 AM",
+    "address": "123 Main St, City, State",
+    "mobile_number": "9876543210",
+    "notes": "Special instructions for puja"
+}
+```
+
+**Response (201):**
+```json
+{
+    "success": true,
+    "message": "Puja booking created successfully",
+    "data": {
+        "booking": {
+            "id": 1,
+            "user_id": 1,
+            "booking_type": "puja",
+            "puja_id": 1,
+            "brahman_id": 1,
+            "booking_date": "2024-12-25T00:00:00.000000Z",
+            "booking_time": "10:00 AM",
+            "address": "123 Main St, City, State",
+            "mobile_number": "9876543210",
+            "notes": "Special instructions for puja",
+            "status": "pending",
+            "payment_status": "pending",
+            "payment_method": "cod",
+            "total_amount": "0.00",
+            "created_at": "2024-01-01T10:00:00.000000Z",
+            "updated_at": "2024-01-01T10:00:00.000000Z",
+            "user": {...},
+            "puja": {...},
+            "brahman": {...}
+        }
+    }
+}
+```
+
+---
+
+## Get User Bookings
+
+Get all bookings for the authenticated user.
+
+**Endpoint:** `GET /api/bookings`
+
+**Authentication:** Required
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": {
+        "bookings": [
+            {
+                "id": 1,
+                "booking_type": "service",
+                "status": "pending",
+                "booking_date": "2024-12-25T00:00:00.000000Z",
+                "booking_time": "10:00 AM",
+                "total_amount": "0.00",
+                "user": {...},
+                "service": {...},
+                "serviceman": {...}
+            }
+        ]
+    }
+}
+```
+
+---
+
+## Get Booking Details
+
+Get details of a specific booking.
+
+**Endpoint:** `GET /api/bookings/{id}`
+
+**Authentication:** Required
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": {
+        "booking": {
+            "id": 1,
+            "user_id": 1,
+            "booking_type": "service",
+            "service_id": 1,
+            "serviceman_id": 1,
+            "booking_date": "2024-12-25T00:00:00.000000Z",
+            "booking_time": "10:00 AM",
+            "address": "123 Main St, City, State",
+            "mobile_number": "9876543210",
+            "notes": "Special instructions",
+            "status": "pending",
+            "payment_status": "pending",
+            "payment_method": "cod",
+            "total_amount": "0.00",
+            "created_at": "2024-01-01T10:00:00.000000Z",
+            "updated_at": "2024-01-01T10:00:00.000000Z",
+            "user": {...},
+            "service": {...},
+            "puja": {...},
+            "serviceman": {...},
+            "brahman": {...}
+        }
+    }
+}
+```
+
+---
+
+## Update Booking
+
+Update an existing booking (only pending or confirmed bookings can be updated).
+
+**Endpoint:** `PUT /api/bookings/{id}`
+
+**Authentication:** Required
+
+**Request Body:**
+```json
+{
+    "booking_date": "2024-12-26",
+    "booking_time": "11:00 AM",
+    "address": "456 New Address, City, State",
+    "mobile_number": "9876543211",
+    "notes": "Updated notes"
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Booking updated successfully",
+    "data": {
+        "booking": {
+            "id": 1,
+            "booking_date": "2024-12-26T00:00:00.000000Z",
+            "booking_time": "11:00 AM",
+            "address": "456 New Address, City, State",
+            "mobile_number": "9876543211",
+            "notes": "Updated notes",
+            "status": "pending",
+            "user": {...},
+            "service": {...},
+            "serviceman": {...}
+        }
+    }
+}
+```
+
+---
+
+## Cancel Booking
+
+Cancel an existing booking (only pending or confirmed bookings can be cancelled).
+
+**Endpoint:** `PUT /api/bookings/{id}/cancel`
+
+**Authentication:** Required
+
+**Request Body:**
+```json
+{
+    "cancellation_reason": "Need to reschedule due to emergency"
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Booking cancelled successfully",
+    "data": {
+        "booking": {
+            "id": 1,
+            "status": "cancelled",
+            "notes": "Original notes\n\nCancellation Reason: Need to reschedule due to emergency",
+            "user": {...},
+            "service": {...},
+            "serviceman": {...}
+        }
+    }
+}
+```
+
+**Note:**
+- Only pending or confirmed bookings can be cancelled
+- Cancellation reason is optional but recommended
+- Cancellation reason will be appended to notes field
+
+---
+
 ## Error Responses
 
 ### 400 Bad Request
