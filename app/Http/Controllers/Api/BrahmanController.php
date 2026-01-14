@@ -35,6 +35,28 @@ class BrahmanController extends Controller
         ]);
     }
 
+    // Get Brahman Profile Data
+    public function getProfileData(Request $request)
+    {
+        $brahman = $request->user();
+
+        $profileData = [
+            'id' => $brahman->id,
+            'name' => $brahman->name,
+            'email' => $brahman->email,
+            'mobile_number' => $brahman->mobile_number,
+            'government_id' => $brahman->government_id,
+            'address' => $brahman->address,
+            'profile_photo' => $brahman->profile_photo ? asset('storage/' . $brahman->profile_photo) : null,
+            'id_proof_image' => $brahman->id_proof_image ? asset('storage/' . $brahman->id_proof_image) : null,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $profileData,
+        ]);
+    }
+
     public function updateProfile(Request $request)
     {
         $brahman = $request->user();

@@ -38,6 +38,28 @@ class ServicemanController extends Controller
         ]);
     }
 
+    // Get Serviceman Profile Data
+    public function getProfileData(Request $request)
+    {
+        $serviceman = $request->user();
+
+        $profileData = [
+            'id' => $serviceman->id,
+            'name' => $serviceman->name,
+            'email' => $serviceman->email,
+            'mobile_number' => $serviceman->mobile_number,
+            'government_id' => $serviceman->government_id,
+            'address' => $serviceman->address,
+            'profile_photo' => $serviceman->profile_photo ? asset('storage/' . $serviceman->profile_photo) : null,
+            'id_proof_image' => $serviceman->id_proof_image ? asset('storage/' . $serviceman->id_proof_image) : null,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $profileData,
+        ]);
+    }
+
     public function updateProfile(Request $request)
     {
         $serviceman = $request->user();

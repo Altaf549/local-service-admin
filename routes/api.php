@@ -75,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pujas/price/update/{id}', [PujaController::class, 'updatePrice']);
     
     // Serviceman Profile Management
+    Route::get('/serviceman/profile-data', [ServicemanController::class, 'getProfileData']);
     Route::get('/serviceman/experiences', [ServicemanController::class, 'getExperiences']);
     Route::get('/serviceman/achievements', [ServicemanController::class, 'getAchievements']);
     Route::post('/serviceman/experience/add', [ServicemanController::class, 'addExperience']);
@@ -86,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Brahman Profile Management
     Route::post('/brahman/profile/update', [BrahmanController::class, 'updateProfile']);
+    Route::get('/brahman/profile-data', [BrahmanController::class, 'getProfileData']);
     Route::get('/brahman/experiences', [BrahmanController::class, 'getExperiences']);
     Route::get('/brahman/achievements', [BrahmanController::class, 'getAchievements']);
     Route::post('/brahman/experience/add', [BrahmanController::class, 'addExperience']);

@@ -2626,6 +2626,70 @@ profile_photo: [file] (optional)
 
 ---
 
+## 24. Get Serviceman Profile Data
+
+Get authenticated serviceman's profile data including verification information.
+
+**Endpoint:** `GET /api/serviceman/profile-data`
+
+**Authentication:** Required (Serviceman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "mobile_number": "9876543210",
+        "government_id": "AADHAAR123456",
+        "address": "123 Main Street, City, State",
+        "profile_photo": "http://localhost:8000/storage/servicemen/profiles/filename.jpg",
+        "id_proof_image": "http://localhost:8000/storage/servicemen/id-proofs/filename.jpg"
+    }
+}
+```
+
+**Note:**
+- Returns the same data that can be updated via the profile update endpoint
+- File URLs are complete and accessible
+- Returns null for profile_photo and id_proof_image if no files exist
+
+---
+
+## 25. Get Brahman Profile Data
+
+Get authenticated brahman's profile data including verification information.
+
+**Endpoint:** `GET /api/brahman/profile-data`
+
+**Authentication:** Required (Brahman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Rajesh Sharma",
+        "email": "rajesh@example.com",
+        "mobile_number": "9876543210",
+        "government_id": "AADHAAR123456",
+        "address": "123 Temple Road, City, State",
+        "profile_photo": "http://localhost:8000/storage/brahmans/profiles/filename.jpg",
+        "id_proof_image": "http://localhost:8000/storage/brahmans/id-proofs/filename.jpg"
+    }
+}
+```
+
+**Note:**
+- Returns the same data that can be updated via the profile update endpoint
+- File URLs are complete and accessible
+- Returns null for profile_photo and id_proof_image if no files exist
+
+---
+
 ## Support
 
 For API support or questions, please contact the development team.
