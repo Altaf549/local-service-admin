@@ -1745,6 +1745,20 @@ Create a new service booking.
 
 **Note:** The `total_amount` is automatically calculated from the `serviceman_service_prices` table based on the selected serviceman and service combination. If no price is found, it defaults to 0.
 
+**Validation:**
+- User cannot book same service if they already have an active (pending/confirmed) booking for that service
+- Error response format:
+  ```json
+  {
+      "message": "You already book this service",
+      "errors": {
+          "service_id": ["You already book this service"]
+      }
+  }
+  ```
+- Serviceman must be available (availability_status = 'available')
+- Booking date must be today or in the future
+
 **Request Body:**
 ```json
 {
@@ -1799,7 +1813,21 @@ Create a new puja booking.
 
 **Authentication:** Required
 
-**Note:** The `total_amount` is automatically calculated from the `brahman_puja_prices` table based on the selected brahman and puja combination. If no price is found, it defaults to 0.
+**Note:** The `total_amount` is automatically calculated from `brahman_puja_prices` table based on the selected brahman and puja combination. If no price is found, it defaults to 0.
+
+**Validation:**
+- User cannot book same puja if they already have an active (pending/confirmed) booking for that puja
+- Error response format:
+  ```json
+  {
+      "message": "You already book this puja",
+      "errors": {
+          "puja_id": ["You already book this puja"]
+      }
+  }
+  ```
+- Brahman must be available (availability_status = 'available')
+- Booking date must be today or in the future
 
 **Request Body:**
 ```json
@@ -2075,13 +2103,37 @@ Mark a confirmed booking as completed (for assigned serviceman or brahman).
 
 ## Error Responses
 
-### 400 Bad Request
+### 400 Bad Request (Validation Errors)
 ```json
 {
-    "success": false,
-    "message": "Invalid request"
+    "message": "You already book this service",
+    "errors": {
+        "service_id": ["You already book this service"]
+    }
 }
 ```
+
+### 404 Not Found
+```json
+{
+    "message": "Booking not found",
+    "errors": {
+        "booking_id": ["Booking not found"]
+    }
+}
+```
+
+### 403 Forbidden
+```json
+{
+    "message": "You are not assigned to this booking",
+    "errors": {
+        "booking_id": ["You are not assigned to this booking"]
+    }
+}
+```
+
+**Note:** All error responses follow the same format with `message` and `errors` fields for consistency across the API.
 
 ### 401 Unauthorized
 ```json

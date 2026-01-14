@@ -35,8 +35,25 @@ class BookingController extends Controller
         // Check if serviceman is available
         if ($serviceman->availability_status !== 'available') {
             return response()->json([
-                'success' => false,
                 'message' => 'Serviceman is not available for booking',
+                'errors' => [
+                    'serviceman_id' => ['Serviceman is not available for booking']
+                ]
+            ], 400);
+        }
+
+        // Check if user already has an active booking for this service
+        $existingBooking = Booking::where('user_id', $user->id)
+            ->where('service_id', $request->service_id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->first();
+
+        if ($existingBooking) {
+            return response()->json([
+                'message' => 'You already book this service',
+                'errors' => [
+                    'service_id' => ['You already book this service']
+                ]
             ], 400);
         }
 
@@ -90,8 +107,25 @@ class BookingController extends Controller
         // Check if brahman is available
         if ($brahman->availability_status !== 'available') {
             return response()->json([
-                'success' => false,
                 'message' => 'Brahman is not available for booking',
+                'errors' => [
+                    'brahman_id' => ['Brahman is not available for booking']
+                ]
+            ], 400);
+        }
+
+        // Check if user already has an active booking for this puja
+        $existingBooking = Booking::where('user_id', $user->id)
+            ->where('puja_id', $request->puja_id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->first();
+
+        if ($existingBooking) {
+            return response()->json([
+                'message' => 'You already book this puja',
+                'errors' => [
+                    'puja_id' => ['You already book this puja']
+                ]
             ], 400);
         }
 
