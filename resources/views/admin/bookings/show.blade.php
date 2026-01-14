@@ -53,15 +53,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><strong>Payment Status:</strong></td>
-                        <td>
-                            <span class="badge bg-{{ $booking->payment_status === 'paid' ? 'success' : 'warning' }}">
-                                {{ ucfirst($booking->payment_status) }}
-                            </span>
-                            <small class="text-muted"> (COD)</small>
-                        </td>
-                    </tr>
-                    <tr>
                         <td><strong>Total Amount:</strong></td>
                         <td>₹{{ number_format($booking->total_amount, 2) }}</td>
                     </tr>
@@ -182,24 +173,16 @@
                     @csrf
                     @method('PUT')
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="status" class="form-label">Booking Status</label>
                             <select name="status" id="status" class="form-select" required>
                                 <option value="pending" {{ $booking->status === 'pending' ? 'selected' : '' }}>Pending</option>
                                 <option value="confirmed" {{ $booking->status === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                <option value="in_progress" {{ $booking->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
                                 <option value="completed" {{ $booking->status === 'completed' ? 'selected' : '' }}>Completed</option>
                                 <option value="cancelled" {{ $booking->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label for="payment_status" class="form-label">Payment Status</label>
-                            <select name="payment_status" id="payment_status" class="form-select">
-                                <option value="pending" {{ $booking->payment_status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="paid" {{ $booking->payment_status === 'paid' ? 'selected' : '' }}>Paid</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        <div class="col-md-6 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary">Update Status</button>
                         </div>
                     </div>
@@ -214,7 +197,6 @@
         $colors = [
             'pending' => 'warning',
             'confirmed' => 'info',
-            'in_progress' => 'primary',
             'completed' => 'success',
             'cancelled' => 'danger'
         ];

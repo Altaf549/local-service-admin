@@ -192,8 +192,8 @@ class BookingController extends Controller
             ], 404);
         }
 
-        // Check if booking can be updated (only pending or confirmed)
-        if (!in_array($booking->status, ['pending', 'confirmed'])) {
+        // Check if booking can be updated (only pending bookings can be updated)
+        if ($booking->status !== 'pending') {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot update booking that is ' . str_replace('_', ' ', $booking->status),
@@ -245,7 +245,7 @@ class BookingController extends Controller
             ], 400);
         }
 
-        if (in_array($booking->status, ['in_progress', 'completed'])) {
+        if (in_array($booking->status, ['confirmed', 'completed'])) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot cancel booking that is ' . str_replace('_', ' ', $booking->status),
@@ -264,6 +264,100 @@ class BookingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Booking cancelled successfully',
+            'data' => [
+                'booking' => $booking->load(['user', 'service', 'puja', 'serviceman', 'brahman']),
+            ],
+        ]);
+    }
+
+    // Accept Booking (For Serviceman/Brahman)
+    public function acceptBooking(Request $request, $id)
+    {
+        $user = $request->user();
+        
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found',
+            ], 404);
+        }
+
+        // Check if user is the assigned serviceman or brahman
+        if ($booking->booking_type === 'service' && $booking->serviceman_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not assigned to this booking',
+            ], 403);
+        }
+
+        if ($booking->booking_type === 'puja' && $booking->brahman_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not assigned to this booking',
+            ], 403);
+        }
+
+        if ($booking->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking cannot be accepted in current status',
+            ], 400);
+        }
+
+        $booking->update(['status' => 'confirmed']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking accepted successfully',
+            'data' => [
+                'booking' => $booking->load(['user', 'service', 'puja', 'serviceman', 'brahman']),
+            ],
+        ]);
+    }
+
+    // Complete Booking (For Serviceman/Brahman)
+    public function completeBooking(Request $request, $id)
+    {
+        $user = $request->user();
+        
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Booking not found',
+            ], 404);
+        }
+
+        // Check if user is the assigned serviceman or brahman
+        if ($booking->booking_type === 'service' && $booking->serviceman_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not assigned to this booking',
+            ], 403);
+        }
+
+        if ($booking->booking_type === 'puja' && $booking->brahman_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not assigned to this booking',
+            ], 403);
+        }
+
+        if ($booking->status !== 'confirmed') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only confirmed bookings can be completed',
+            ], 400);
+        }
+
+        $booking->update(['status' => 'completed']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking completed successfully',
             'data' => [
                 'booking' => $booking->load(['user', 'service', 'puja', 'serviceman', 'brahman']),
             ],
@@ -290,7 +384,6 @@ class BookingController extends Controller
     {
         $request->validate([
             'status' => 'required|in:pending,confirmed,in_progress,completed,cancelled',
-            'payment_status' => 'sometimes|in:pending,paid',
         ]);
 
         $booking = Booking::find($id);
@@ -304,7 +397,6 @@ class BookingController extends Controller
 
         $booking->update([
             'status' => $request->status,
-            'payment_status' => $request->payment_status ?? $booking->payment_status,
         ]);
 
         return response()->json([

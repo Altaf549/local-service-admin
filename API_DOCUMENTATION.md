@@ -1923,7 +1923,7 @@ Get details of a specific booking.
 
 ## Update Booking
 
-Update an existing booking (only pending or confirmed bookings can be updated).
+Update an existing booking (only pending bookings can be updated).
 
 **Endpoint:** `PUT /api/bookings/{id}`
 
@@ -1968,7 +1968,7 @@ Update an existing booking (only pending or confirmed bookings can be updated).
 
 Cancel an existing booking (only pending or confirmed bookings can be cancelled).
 
-**Endpoint:** `PUT /api/bookings/{id}/cancel`
+**Endpoint:** `PUT /api/bookings/cancel/{id}`
 
 **Authentication:** Required
 
@@ -2001,6 +2001,75 @@ Cancel an existing booking (only pending or confirmed bookings can be cancelled)
 - Only pending or confirmed bookings can be cancelled
 - Cancellation reason is optional but recommended
 - Cancellation reason will be appended to notes field
+
+---
+
+## Accept Booking
+
+Accept a pending booking (for assigned serviceman or brahman).
+
+**Endpoint:** `PUT /api/bookings/accept/{id}`
+
+**Authentication:** Required
+
+**Request Body:** (Empty)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Booking accepted successfully",
+    "data": {
+        "booking": {
+            "id": 1,
+            "status": "confirmed",
+            "user": {...},
+            "service": {...},
+            "serviceman": {...}
+        }
+    }
+}
+```
+
+**Note:**
+- Only the assigned serviceman or brahman can accept the booking
+- Booking status changes from "pending" to "confirmed"
+- Empty request body - only booking ID in URL is needed
+
+---
+
+## Complete Booking
+
+Mark a confirmed booking as completed (for assigned serviceman or brahman).
+
+**Endpoint:** `PUT /api/bookings/complete/{id}`
+
+**Authentication:** Required
+
+**Request Body:** (Empty)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Booking completed successfully",
+    "data": {
+        "booking": {
+            "id": 1,
+            "status": "completed",
+            "user": {...},
+            "service": {...},
+            "serviceman": {...}
+        }
+    }
+}
+```
+
+**Note:**
+- Only the assigned serviceman or brahman can complete the booking
+- Booking status changes from "confirmed" to "completed"
+- Empty request body - only booking ID in URL is needed
+- Only confirmed bookings can be completed
 
 ---
 

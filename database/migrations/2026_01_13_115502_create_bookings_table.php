@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('address');
             $table->string('mobile_number');
             $table->text('notes')->nullable();
-            $table->enum('status', ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
             $table->enum('payment_status', ['pending', 'paid'])->default('pending');
             $table->enum('payment_method', ['cod'])->default('cod');
             $table->decimal('total_amount', 10, 2)->default(0);

@@ -27,7 +27,7 @@
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
-                        <th>Payment</th>
+                        <th>Amount</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -66,13 +66,7 @@
                                     {{ ucfirst(str_replace('_', ' ', $booking->status)) }}
                                 </span>
                             </td>
-                            <td>
-                                <span class="badge bg-{{ $booking->payment_status === 'paid' ? 'success' : 'warning' }}">
-                                    {{ ucfirst($booking->payment_status) }}
-                                </span>
-                                <br>
-                                <small class="text-muted">COD</small>
-                            </td>
+                            <td>₹{{ number_format($booking->total_amount, 2) }}</td>
                             <td>
                                 <a href="{{ route('admin.bookings.show', $booking->id) }}" class="btn btn-sm btn-info">
                                     <i class="fas fa-eye"></i>
@@ -91,7 +85,6 @@
         $colors = [
             'pending' => 'warning',
             'confirmed' => 'info',
-            'in_progress' => 'primary',
             'completed' => 'success',
             'cancelled' => 'danger'
         ];

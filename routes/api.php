@@ -55,7 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/bookings', [BookingController::class, 'getUserBookings']);
     Route::get('/bookings/{id}', [BookingController::class, 'getBookingDetails']);
     Route::put('/bookings/{id}', [BookingController::class, 'updateBooking']);
-    Route::put('/bookings/{id}/cancel', [BookingController::class, 'cancelBooking']);
+    Route::put('/bookings/cancel/{id}', [BookingController::class, 'cancelBooking']);
+    Route::put('/bookings/accept/{id}', [BookingController::class, 'acceptBooking']);
+    Route::put('/bookings/complete/{id}', [BookingController::class, 'completeBooking']);
     
     // Admin Booking Routes
     Route::get('/admin/bookings', [BookingController::class, 'getAllBookings']);

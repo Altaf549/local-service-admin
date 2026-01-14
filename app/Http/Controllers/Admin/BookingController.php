@@ -28,15 +28,13 @@ class BookingController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,confirmed,in_progress,completed,cancelled',
-            'payment_status' => 'sometimes|in:pending,paid',
+            'status' => 'required|in:pending,confirmed,completed,cancelled',
         ]);
 
         $booking = Booking::findOrFail($id);
 
         $booking->update([
             'status' => $request->status,
-            'payment_status' => $request->payment_status ?? $booking->payment_status,
         ]);
 
         return redirect()->back()
