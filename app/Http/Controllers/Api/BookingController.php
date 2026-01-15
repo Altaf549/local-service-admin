@@ -182,10 +182,33 @@ class BookingController extends Controller
     {
         $user = $request->user();
         
-        $booking = Booking::with(['user', 'service', 'puja', 'serviceman', 'brahman'])
-            ->where('id', $id)
-            ->where('user_id', $user->id)
-            ->first();
+        // Check if user is authenticated
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication required.',
+            ], 401);
+        }
+        
+        // Build query to find booking
+        $query = Booking::with(['user', 'service', 'puja', 'serviceman', 'brahman'])
+            ->where('id', $id);
+
+        // Filter booking based on user role
+        if ($user instanceof Serviceman) {
+            // Servicemen can only see their assigned bookings
+            $query->where('serviceman_id', $user->id);
+        } elseif ($user instanceof Brahman) {
+            // Brahmans can only see their assigned bookings
+            $query->where('brahman_id', $user->id);
+        } elseif ($user->role === 'admin') {
+            // Admins can see any booking (no additional filter needed)
+        } else {
+            // Regular users can only see their own bookings
+            $query->where('user_id', $user->id);
+        }
+
+        $booking = $query->first();
 
         if (!$booking) {
             return response()->json([
@@ -398,12 +421,38 @@ class BookingController extends Controller
         ]);
     }
 
-    // Get All Bookings (Admin)
+    // Get All Bookings (Admin/Serviceman/Brahman/User)
     public function getAllBookings(Request $request)
     {
-        $bookings = Booking::with(['user', 'service', 'puja', 'serviceman', 'brahman'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $user = $request->user();
+        
+        // Check if user is authenticated
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication required.',
+            ], 401);
+        }
+
+        // Build query based on user role
+        $query = Booking::with(['user', 'service', 'puja', 'serviceman', 'brahman'])
+            ->orderBy('created_at', 'desc');
+
+        // Filter bookings based on user role
+        if ($user instanceof Serviceman) {
+            // Servicemen can only see their assigned bookings
+            $query->where('serviceman_id', $user->id);
+        } elseif ($user instanceof Brahman) {
+            // Brahmans can only see their assigned bookings
+            $query->where('brahman_id', $user->id);
+        } elseif ($user->role === 'admin') {
+            // Admins can see all bookings (no additional filter needed)
+        } else {
+            // Regular users can only see their own bookings
+            $query->where('user_id', $user->id);
+        }
+
+        $bookings = $query->get();
 
         return response()->json([
             'success' => true,

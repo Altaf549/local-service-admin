@@ -1065,11 +1065,17 @@ Get all bookings for the authenticated user.
 
 ## 26. Get Booking Details
 
-Get details of a specific booking.
+Get details of a specific booking with role-based authorization.
 
 **Endpoint:** `GET /api/bookings/{id}`
 
 **Authentication:** Required
+
+**Authorization:**
+- **Admin:** Can see any booking details
+- **Serviceman:** Can only see bookings assigned to them
+- **Brahman:** Can only see bookings assigned to them  
+- **Regular User:** Can only see their own bookings
 
 **Response (200):**
 ```json
@@ -1102,6 +1108,28 @@ Get details of a specific booking.
     }
 }
 ```
+
+**Error Response (401):**
+```json
+{
+    "success": false,
+    "message": "Authentication required."
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Booking not found"
+}
+```
+
+**Note:**
+- Access is restricted based on user role and booking assignment
+- Servicemen/Brahmans can only view bookings assigned to them
+- Regular users can only view their own bookings
+- Admins have full access to all booking details
 
 ---
 
@@ -1256,13 +1284,19 @@ Mark a confirmed booking as completed (for assigned serviceman or brahman).
 
 ---
 
-## 31. Get All Bookings (Admin)
+## 31. Get All Bookings (Admin/Serviceman/Brahman/User)
 
-Get all bookings in the system (admin only).
+Get bookings based on user role with proper authorization.
 
 **Endpoint:** `GET /api/admin/bookings`
 
-**Authentication:** Required (Admin)
+**Authentication:** Required (Any authenticated user)
+
+**Authorization:**
+- **Admin:** Can see all bookings in the system
+- **Serviceman:** Can only see bookings assigned to them
+- **Brahman:** Can only see bookings assigned to them  
+- **Regular User:** Can only see their own bookings
 
 **Response (200):**
 ```json
@@ -1285,6 +1319,20 @@ Get all bookings in the system (admin only).
     }
 }
 ```
+
+**Error Response (401):**
+```json
+{
+    "success": false,
+    "message": "Authentication required."
+}
+```
+
+**Note:**
+- Response data is filtered based on user role
+- Admins get complete system overview
+- Servicemen/Brahmans get only their assigned bookings
+- Regular users get only their personal bookings
 
 ---
 
