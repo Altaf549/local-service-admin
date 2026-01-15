@@ -372,4 +372,48 @@ class ServicemanController extends Controller
             ],
         ]);
     }
+
+    // Get Serviceman Status
+    public function getStatus($id)
+    {
+        $serviceman = Serviceman::with('category')
+            ->where('id', $id)
+            ->first();
+
+        if (!$serviceman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Serviceman not found',
+                'errors' => [
+                    'id' => ['Serviceman not found']
+                ]
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $serviceman->id,
+                'name' => $serviceman->name,
+                'email' => $serviceman->email,
+                'mobile_number' => $serviceman->mobile_number,
+                'phone' => $serviceman->phone,
+                'category' => $serviceman->category ? [
+                    'id' => $serviceman->category->id,
+                    'category_name' => $serviceman->category->category_name,
+                ] : null,
+                'experience' => $serviceman->experience,
+                'profile_photo' => $serviceman->profile_photo ? asset('storage/' . $serviceman->profile_photo) : null,
+                'profile_photo_url' => $serviceman->profile_photo ? url('storage/' . $serviceman->profile_photo) : null,
+                'id_proof_image' => $serviceman->id_proof_image ? asset('storage/' . $serviceman->id_proof_image) : null,
+                'id_proof_image_url' => $serviceman->id_proof_image ? url('storage/' . $serviceman->id_proof_image) : null,
+                'government_id' => $serviceman->government_id,
+                'address' => $serviceman->address,
+                'status' => $serviceman->status,
+                'availability_status' => $serviceman->availability_status,
+                'is_active' => $serviceman->status === 'active',
+                'is_available' => $serviceman->availability_status === 'available',
+            ]
+        ]);
+    }
 }

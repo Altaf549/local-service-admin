@@ -89,7 +89,7 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function updatePrice(Request $request, $id)
+    public function addPrice(Request $request, $id)
     {
         try {
             // Get authenticated serviceman from token

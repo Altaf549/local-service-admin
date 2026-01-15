@@ -340,4 +340,45 @@ class BrahmanController extends Controller
             ],
         ]);
     }
+
+    // Get Brahman Status
+    public function getStatus($id)
+    {
+        $brahman = Brahman::where('id', $id)
+            ->first();
+
+        if (!$brahman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Brahman not found',
+                'errors' => [
+                    'id' => ['Brahman not found']
+                ]
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $brahman->id,
+                'name' => $brahman->name,
+                'email' => $brahman->email,
+                'mobile_number' => $brahman->mobile_number,
+                'specialization' => $brahman->specialization,
+                'languages' => $brahman->languages,
+                'experience' => $brahman->experience,
+                'charges' => $brahman->charges,
+                'profile_photo' => $brahman->profile_photo ? asset('storage/' . $brahman->profile_photo) : null,
+                'profile_photo_url' => $brahman->profile_photo ? url('storage/' . $brahman->profile_photo) : null,
+                'id_proof_image' => $brahman->id_proof_image ? asset('storage/' . $brahman->id_proof_image) : null,
+                'id_proof_image_url' => $brahman->id_proof_image ? url('storage/' . $brahman->id_proof_image) : null,
+                'government_id' => $brahman->government_id,
+                'address' => $brahman->address,
+                'status' => $brahman->status,
+                'availability_status' => $brahman->availability_status,
+                'is_active' => $brahman->status === 'active',
+                'is_available' => $brahman->availability_status === 'available',
+            ]
+        ]);
+    }
 }

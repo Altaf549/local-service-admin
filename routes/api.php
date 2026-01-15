@@ -35,8 +35,10 @@ Route::get('/pujas', [PujaController::class, 'index']);
 Route::get('/pujas/{id}', [PujaController::class, 'show']);
 Route::get('/pujas/by-type/{typeId}', [PujaController::class, 'getPujasByType']);
 Route::get('/servicemen', [ServicemanController::class, 'index']);
+Route::get('/servicemen/status/{id}', [ServicemanController::class, 'getStatus']);
 Route::get('/servicemen/details/{id}', [ServicemanController::class, 'getDetails']);
 Route::get('/brahmans', [BrahmanController::class, 'index']);
+Route::get('/brahmans/status/{id}', [BrahmanController::class, 'getStatus']);
 Route::get('/brahmans/details/{id}', [BrahmanController::class, 'getDetails']);
 
 // Protected Routes (require authentication)
@@ -69,10 +71,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/brahman/simple-profile/update', [ProfileController::class, 'updateBrahmanProfile']);
     
     // Service Price Update (Admin only or authorized)
-    Route::post('/services/price/update/{id}', [ServiceController::class, 'updatePrice']);
+    Route::post('/services/price/add/{id}', [ServiceController::class, 'addPrice']);
     
     // Puja Price and Material File Update (Admin only or authorized)
-    Route::post('/pujas/price/update/{id}', [PujaController::class, 'updatePrice']);
+    Route::post('/pujas/price/add/{id}', [PujaController::class, 'addPrice']);
     
     // Serviceman Profile Management
     Route::get('/serviceman/profile-data', [ServicemanController::class, 'getProfileData']);

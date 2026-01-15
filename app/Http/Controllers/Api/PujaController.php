@@ -88,7 +88,7 @@ class PujaController extends Controller
         ]);
     }
 
-    public function updatePrice(Request $request, $id)
+    public function addPrice(Request $request, $id)
     {
         // Get authenticated brahman from token
         $user = $request->user();
