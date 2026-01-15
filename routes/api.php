@@ -72,9 +72,17 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Service Price Update (Admin only or authorized)
     Route::post('/services/price/add/{id}', [ServiceController::class, 'addPrice']);
+    Route::get('/services/price/all', [ServiceController::class, 'getAllPrices']);
+    Route::get('/services/price/{id}', [ServiceController::class, 'getPrice']);
+    Route::put('/services/price/{id}', [ServiceController::class, 'updatePrice']);
+    Route::delete('/services/price/{id}', [ServiceController::class, 'deletePrice']);
     
     // Puja Price and Material File Update (Admin only or authorized)
     Route::post('/pujas/price/add/{id}', [PujaController::class, 'addPrice']);
+    Route::get('/pujas/price/all', [PujaController::class, 'getAllPrices']);
+    Route::get('/pujas/price/{id}', [PujaController::class, 'getPrice']);
+    Route::put('/pujas/price/{id}', [PujaController::class, 'updatePrice']);
+    Route::delete('/pujas/price/{id}', [PujaController::class, 'deletePrice']);
     
     // Serviceman Profile Management
     Route::get('/serviceman/profile-data', [ServicemanController::class, 'getProfileData']);

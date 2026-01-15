@@ -2421,6 +2421,409 @@ Get complete profile information for a specific brahman (same data as login resp
 
 ---
 
+## 63. Get All Service Prices (Serviceman)
+
+Get all service prices set by the authenticated serviceman.
+
+**Endpoint:** `GET /api/services/price/all`
+
+**Authentication:** Required (Serviceman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service prices retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "service_id": 1,
+            "service_name": "Plumbing",
+            "category": {
+                "id": 1,
+                "category_name": "Home Services"
+            },
+            "duration": "Professional plumbing services",
+            "price": "750.00",
+            "description": "Complete plumbing solutions",
+            "image": "http://your-domain.com/storage/services/plumbing.jpg",
+            "created_at": "2024-01-01 10:00:00",
+            "updated_at": "2024-01-01 10:00:00"
+        }
+    ]
+}
+```
+
+**Error Response (403):**
+```json
+{
+    "success": false,
+    "message": "Only servicemen can view their service prices."
+}
+```
+
+**Error Response (403):**
+```json
+{
+    "success": false,
+    "message": "Your account is inactive. You cannot view service prices. Please contact support."
+}
+```
+
+**Note:**
+- Only authenticated servicemen can access their own prices
+- Returns all services with custom pricing set by the serviceman
+- Includes complete service information with category details
+- Inactive servicemen cannot access pricing endpoints
+
+---
+
+## 64. Get Single Service Price (Serviceman)
+
+Get a specific service price set by the authenticated serviceman.
+
+**Endpoint:** `GET /api/services/price/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service price retrieved successfully",
+    "data": {
+        "id": 1,
+        "service_id": 1,
+        "service_name": "Plumbing",
+        "category": {
+            "id": 1,
+            "category_name": "Home Services"
+        },
+        "duration": "Professional plumbing services",
+        "price": "750.00",
+        "description": "Complete plumbing solutions",
+        "image": "http://your-domain.com/storage/services/plumbing.jpg",
+        "created_at": "2024-01-01 10:00:00",
+        "updated_at": "2024-01-01 10:00:00"
+    }
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Service price not found",
+    "errors": {
+        "service_id": ["Service price not found for this service"]
+    }
+}
+```
+
+**Note:**
+- Returns specific service price for the authenticated serviceman
+- If no custom price is set, endpoint returns 404
+- Includes complete service and category information
+
+---
+
+## 65. Update Service Price (Serviceman)
+
+Update an existing service price for the authenticated serviceman.
+
+**Endpoint:** `PUT /api/services/price/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**Request Body:**
+```json
+{
+    "price": "800.00"
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service price updated successfully",
+    "data": {
+        "id": 1,
+        "service_id": 1,
+        "service_name": "Plumbing",
+        "category": {
+            "id": 1,
+            "category_name": "Home Services"
+        },
+        "duration": "Professional plumbing services",
+        "price": "800.00",
+        "description": "Complete plumbing solutions",
+        "image": "http://your-domain.com/storage/services/plumbing.jpg",
+        "created_at": "2024-01-01 10:00:00",
+        "updated_at": "2024-01-01 11:00:00"
+    }
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Service price not found",
+    "errors": {
+        "service_id": ["Service price not found for this service"]
+    }
+}
+```
+
+**Note:**
+- Only existing service prices can be updated
+- Price must be a valid decimal number
+- Returns updated service price with complete information
+
+---
+
+## 66. Delete Service Price (Serviceman)
+
+Delete a service price for the authenticated serviceman.
+
+**Endpoint:** `DELETE /api/services/price/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service price deleted successfully"
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Service price not found",
+    "errors": {
+        "service_id": ["Service price not found for this service"]
+    }
+}
+```
+
+**Note:**
+- Only existing service prices can be deleted
+- Deleting a price will revert to default service price
+- Serviceman must be active to delete prices
+- Brahman must be active to delete prices
+- Material file is also deleted when price is deleted
+
+---
+
+## 67. Get All Puja Prices (Brahman)
+
+Get all puja prices set by the authenticated brahman.
+
+**Endpoint:** `GET /api/pujas/price/all`
+
+**Authentication:** Required (Brahman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Puja prices retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "puja_id": 1,
+            "puja_name": "Ganesh Puja",
+            "puja_type": {
+                "id": 1,
+                "type_name": "Festival"
+            },
+            "duration": "2 hours",
+            "price": "1500.00",
+            "description": "Ganesh Puja description",
+            "image": "http://your-domain.com/storage/pujas/ganesh.jpg",
+            "material_file": "http://your-domain.com/storage/pujas/materials/ganesh.pdf",
+            "material_file_url": "http://your-domain.com/storage/pujas/materials/ganesh.pdf",
+            "created_at": "2024-01-01 10:00:00",
+            "updated_at": "2024-01-01 10:00:00"
+        }
+    ]
+}
+```
+
+**Error Response (403):**
+```json
+{
+    "success": false,
+    "message": "Only brahmans can view their puja prices."
+}
+```
+
+**Error Response (403):**
+```json
+{
+    "success": false,
+    "message": "Your account is inactive. You cannot view puja prices. Please contact support."
+}
+```
+
+**Note:**
+- Only authenticated brahmans can access their own prices
+- Returns all pujas with custom pricing set by the brahman
+- Includes complete puja information with puja type details
+- Material file URLs are generated for both default and custom materials
+
+---
+
+## 68. Get Single Puja Price (Brahman)
+
+Get a specific puja price set by the authenticated brahman.
+
+**Endpoint:** `GET /api/pujas/price/{id}`
+
+**Authentication:** Required (Brahman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Puja price retrieved successfully",
+    "data": {
+        "id": 1,
+        "puja_id": 1,
+        "puja_name": "Ganesh Puja",
+        "puja_type": {
+            "id": 1,
+            "type_name": "Festival"
+        },
+        "duration": "2 hours",
+        "price": "1500.00",
+        "description": "Ganesh Puja description",
+        "image": "http://your-domain.com/storage/pujas/ganesh.jpg",
+        "material_file": "http://your-domain.com/storage/pujas/materials/ganesh.pdf",
+        "material_file_url": "http://your-domain.com/storage/pujas/materials/ganesh.pdf",
+        "created_at": "2024-01-01 10:00:00",
+        "updated_at": "2024-01-01 10:00:00"
+    }
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Puja price not found",
+    "errors": {
+        "puja_id": ["Puja price not found for this puja"]
+    }
+}
+```
+
+**Note:**
+- Returns specific puja price for the authenticated brahman
+- If no custom price is set, endpoint returns 404
+- Includes complete puja and puja type information
+
+---
+
+## 69. Update Puja Price (Brahman)
+
+Update an existing puja price for the authenticated brahman.
+
+**Endpoint:** `PUT /api/pujas/price/{id}`
+
+**Authentication:** Required (Brahman token)
+
+**Request Body:**
+```json
+{
+    "price": "1800.00",
+    "material_file": [file] (optional, PDF, max 10MB)
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Brahman puja price updated successfully",
+    "data": {
+        "id": 1,
+        "puja_id": 1,
+        "puja_name": "Ganesh Puja",
+        "puja_type": {
+            "id": 1,
+            "type_name": "Festival"
+        },
+        "duration": "2 hours",
+        "price": "1800.00",
+        "description": "Ganesh Puja description",
+        "image": "http://your-domain.com/storage/pujas/ganesh.jpg",
+        "material_file": "http://your-domain.com/storage/pujas/materials/brahman-specific.pdf",
+        "material_file_url": "http://your-domain.com/storage/pujas/materials/brahman-specific.pdf",
+        "created_at": "2024-01-01 10:00:00",
+        "updated_at": "2024-01-01 11:00:00"
+    }
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Puja price not found",
+    "errors": {
+        "puja_id": ["Puja price not found for this puja"]
+    }
+}
+```
+
+**Note:**
+- Only existing puja prices can be updated
+- Price must be a valid decimal number
+- Material file is optional - only updates if provided
+- Material file replaces existing one and old file is deleted
+
+---
+
+## 70. Delete Puja Price (Brahman)
+
+Delete a puja price for the authenticated brahman.
+
+**Endpoint:** `DELETE /api/pujas/price/{id}`
+
+**Authentication:** Required (Brahman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Puja price deleted successfully"
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Puja price not found",
+    "errors": {
+        "puja_id": ["Puja price not found for this puja"]
+    }
+}
+```
+
+**Note:**
+- Only existing puja prices can be deleted
+- Deleting a price will revert to default puja price
+- Brahman must be active to delete prices
+- Material file is also deleted when price is deleted
+
+---
+
 ## Error Responses
 
 ### 400 Bad Request (Validation Errors)
@@ -2461,6 +2864,225 @@ Get complete profile information for a specific brahman (same data as login resp
 ```
 
 **Note:** All error responses follow the same format with `message` and `errors` fields for consistency across the API.
+
+---
+
+## 71. Get All Service Prices (Serviceman)
+
+Get all service prices set by the authenticated serviceman.
+
+**Endpoint:** `GET /api/services/price/all`
+
+**Authentication:** Required (Serviceman token)
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service prices retrieved successfully",
+    "data": [
+        {
+            "id": 1,
+            "serviceman_id": 1,
+            "serviceman_name": "John Doe",
+            "service_id": 1,
+            "service_name": "Home Cleaning",
+            "category": {
+                "id": 1,
+                "category_name": "Cleaning"
+            },
+            "price": "500.00",
+            "description": "Professional home cleaning service",
+            "image": "http://your-domain.com/storage/services/cleaning.jpg",
+            "created_at": "2024-01-01 10:00:00",
+            "updated_at": "2024-01-01 10:00:00"
+        }
+    ]
+}
+```
+
+**Error Response (401):**
+```json
+{
+    "success": false,
+    "message": "Authentication required."
+}
+```
+
+**Error Response (403):**
+```json
+{
+    "success": false,
+    "message": "Only servicemen can view their service prices."
+}
+```
+
+**Note:**
+- Only authenticated servicemen can view their own service prices
+- Serviceman must have active status
+- Returns all custom prices set by the serviceman
+
+---
+
+## 72. Get Single Service Price (Serviceman)
+
+Get a specific service price set by the authenticated serviceman.
+
+**Endpoint:** `GET /api/services/price/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**Path Parameters:**
+- `id` (integer, required): Service ID
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service price retrieved successfully",
+    "data": {
+        "id": 1,
+        "serviceman_id": 1,
+        "serviceman_name": "John Doe",
+        "service_id": 1,
+        "service_name": "Home Cleaning",
+        "category": {
+            "id": 1,
+            "category_name": "Cleaning"
+        },
+        "price": "500.00",
+        "description": "Professional home cleaning service",
+        "image": "http://your-domain.com/storage/services/cleaning.jpg",
+        "created_at": "2024-01-01 10:00:00",
+        "updated_at": "2024-01-01 10:00:00"
+    }
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Service price not found",
+    "errors": {
+        "service_id": ["Service price not found for this service"]
+    }
+}
+```
+
+**Note:**
+- Only authenticated servicemen can view their own service prices
+- Service ID must exist and have a custom price set by the serviceman
+- Serviceman must have active status
+
+---
+
+## 73. Update Service Price (Serviceman)
+
+Update a service price for the authenticated serviceman.
+
+**Endpoint:** `PUT /api/services/price/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**Path Parameters:**
+- `id` (integer, required): Service ID
+
+**Request Body:**
+```json
+{
+    "price": "600.00"
+}
+```
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service price updated successfully",
+    "data": {
+        "id": 1,
+        "serviceman_id": 1,
+        "service_id": 1,
+        "price": "600.00",
+        "created_at": "2024-01-01 10:00:00",
+        "updated_at": "2024-01-01 11:00:00",
+        "serviceman": {
+            "id": 1,
+            "name": "John Doe"
+        },
+        "service": {
+            "id": 1,
+            "service_name": "Home Cleaning"
+        }
+    }
+}
+```
+
+**Error Response (422):**
+```json
+{
+    "success": false,
+    "message": "Validation failed",
+    "errors": {
+        "price": ["The price must be a number.", "The price must be at least 0."]
+    }
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Service price not found",
+    "errors": {
+        "service_id": ["Service price not found for this service"]
+    }
+}
+```
+
+**Note:**
+- Only existing service prices can be updated
+- Price must be a valid number greater than or equal to 0
+- Serviceman must be active to update prices
+- Use `addPrice` endpoint to create new service prices
+
+---
+
+## 74. Delete Service Price (Serviceman)
+
+Delete a service price set by the authenticated serviceman.
+
+**Endpoint:** `DELETE /api/services/price/{id}`
+
+**Authentication:** Required (Serviceman token)
+
+**Path Parameters:**
+- `id` (integer, required): Service ID
+
+**Response (200):**
+```json
+{
+    "success": true,
+    "message": "Service price deleted successfully"
+}
+```
+
+**Error Response (404):**
+```json
+{
+    "success": false,
+    "message": "Service price not found",
+    "errors": {
+        "service_id": ["Service price not found for this service"]
+    }
+}
+```
+
+**Note:**
+- Only existing service prices can be deleted
+- Deleting a price will revert to default service price
+- Serviceman must be active to delete prices
 
 ---
 

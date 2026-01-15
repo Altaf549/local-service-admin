@@ -151,6 +151,299 @@ class PujaController extends Controller
         ]);
     }
 
+    // Get All Puja Prices for Brahman
+    public function getAllPrices(Request $request)
+    {
+        try {
+            // Get authenticated brahman from token
+            $user = $request->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Authentication required.',
+                ], 401);
+            }
+            
+            // Check if authenticated user is a brahman
+            if (!$user instanceof Brahman) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only brahmans can view their puja prices.',
+                ], 403);
+            }
+
+            // Check if brahman is active
+            if ($user->status !== 'active') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account is inactive. You cannot view puja prices. Please contact support.',
+                ], 403);
+            }
+
+            // Get all puja prices for this brahman
+            $pujaPrices = \App\Models\BrahmanPujaPrice::with('puja.pujaType')
+                ->where('brahman_id', $user->id)
+                ->get()
+                ->map(function ($price) {
+                    return [
+                        'id' => $price->id,
+                        'puja_id' => $price->puja_id,
+                        'puja_name' => $price->puja->puja_name,
+                        'puja_type' => $price->puja->pujaType ? [
+                            'id' => $price->puja->pujaType->id,
+                            'type_name' => $price->puja->pujaType->type_name,
+                        ] : null,
+                        'duration' => $price->puja->duration,
+                        'price' => $price->price,
+                        'description' => $price->puja->description,
+                        'image' => $price->puja->image ? asset('storage/' . $price->puja->image) : null,
+                        'material_file' => $price->material_file ? asset('storage/' . $price->material_file) : null,
+                        'material_file_url' => $price->material_file ? url('storage/' . $price->material_file) : null,
+                        'created_at' => $price->created_at->format('Y-m-d H:i:s'),
+                        'updated_at' => $price->updated_at->format('Y-m-d H:i:s'),
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Puja prices retrieved successfully',
+                'data' => $pujaPrices,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve puja prices: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // Get Single Puja Price for Brahman
+    public function getPrice(Request $request, $id)
+    {
+        try {
+            // Get authenticated brahman from token
+            $user = $request->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Authentication required.',
+                ], 401);
+            }
+            
+            // Check if authenticated user is a brahman
+            if (!$user instanceof Brahman) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only brahmans can view their puja prices.',
+                ], 403);
+            }
+
+            // Check if brahman is active
+            if ($user->status !== 'active') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account is inactive. You cannot view puja prices. Please contact support.',
+                ], 403);
+            }
+
+            // Get specific puja price for this brahman
+            $pujaPrice = \App\Models\BrahmanPujaPrice::with('puja.pujaType')
+                ->where('brahman_id', $user->id)
+                ->where('puja_id', $id)
+                ->first();
+
+            if (!$pujaPrice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Puja price not found',
+                    'errors' => [
+                        'puja_id' => ['Puja price not found for this puja']
+                    ]
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Puja price retrieved successfully',
+                'data' => [
+                    'id' => $pujaPrice->id,
+                    'puja_id' => $pujaPrice->puja_id,
+                    'puja_name' => $pujaPrice->puja->puja_name,
+                    'puja_type' => $pujaPrice->puja->pujaType ? [
+                        'id' => $pujaPrice->puja->pujaType->id,
+                        'type_name' => $pujaPrice->puja->pujaType->type_name,
+                    ] : null,
+                    'duration' => $pujaPrice->puja->duration,
+                    'price' => $pujaPrice->price,
+                    'description' => $pujaPrice->puja->description,
+                    'image' => $pujaPrice->puja->image ? asset('storage/' . $pujaPrice->puja->image) : null,
+                    'material_file' => $pujaPrice->material_file ? asset('storage/' . $pujaPrice->material_file) : null,
+                    'material_file_url' => $pujaPrice->material_file ? url('storage/' . $pujaPrice->material_file) : null,
+                    'created_at' => $pujaPrice->created_at->format('Y-m-d H:i:s'),
+                    'updated_at' => $pujaPrice->updated_at->format('Y-m-d H:i:s'),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve puja price: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // Update Puja Price for Brahman
+    public function updatePrice(Request $request, $id)
+    {
+        try {
+            // Get authenticated brahman from token
+            $user = $request->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Authentication required.',
+                ], 401);
+            }
+            
+            // Check if authenticated user is a brahman
+            if (!$user instanceof Brahman) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only brahmans can update puja prices.',
+                ], 403);
+            }
+
+            // Check if brahman is active
+            if ($user->status !== 'active') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account is inactive. You cannot update puja prices. Please contact support.',
+                ], 403);
+            }
+
+            // Validate price
+            $validated = $request->validate([
+                'price' => 'required|numeric|min:0',
+                'material_file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
+            ]);
+
+            // Find existing puja price
+            $pujaPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
+                ->where('puja_id', $id)
+                ->first();
+
+            if (!$pujaPrice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Puja price not found',
+                    'errors' => [
+                        'puja_id' => ['Puja price not found for this puja']
+                    ]
+                ], 404);
+            }
+
+            // Prepare data for brahman-specific puja price
+            $data = ['price' => $validated['price']];
+            
+            // Handle material file upload if provided
+            if ($request->hasFile('material_file')) {
+                // Get existing brahman puja price to check for old material file
+                $existingPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
+                    ->where('puja_id', $id)
+                    ->first();
+                
+                // Delete old material file if exists
+                if ($existingPrice && $existingPrice->material_file) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($existingPrice->material_file);
+                }
+                
+                // Store new material file
+                $data['material_file'] = $request->file('material_file')->store('pujas/materials', 'public');
+            }
+
+            // Update or create brahman-specific puja price
+            $pujaPrice->update($data);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Brahman puja price updated successfully',
+                'data' => $pujaPrice->load(['brahman', 'puja']),
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update puja price: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    // Delete Puja Price for Brahman
+    public function deletePrice(Request $request, $id)
+    {
+        try {
+            // Get authenticated brahman from token
+            $user = $request->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Authentication required.',
+                ], 401);
+            }
+            
+            // Check if authenticated user is a brahman
+            if (!$user instanceof Brahman) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only brahmans can delete puja prices.',
+                ], 403);
+            }
+
+            // Check if brahman is active
+            if ($user->status !== 'active') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account is inactive. You cannot delete puja prices. Please contact support.',
+                ], 403);
+            }
+
+            // Find and delete puja price
+            $pujaPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
+                ->where('puja_id', $id)
+                ->first();
+
+            if (!$pujaPrice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Puja price not found',
+                    'errors' => [
+                        'puja_id' => ['Puja price not found for this puja']
+                    ]
+                ], 404);
+            }
+
+            $pujaPrice->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Puja price deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete puja price: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function getPujasByType($typeId)
     {
         $pujas = Puja::with('pujaType')
