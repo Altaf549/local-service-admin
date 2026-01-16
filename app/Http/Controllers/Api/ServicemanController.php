@@ -88,7 +88,7 @@ class ServicemanController extends Controller
         }
 
         $serviceman->update($data);
-$servicemanData = $serviceman->toArray();
+        $servicemanData = $serviceman->toArray();
         if ($serviceman->profile_photo) {
             $servicemanData['profile_photo_url'] = asset('storage/' . $serviceman->profile_photo);
         }

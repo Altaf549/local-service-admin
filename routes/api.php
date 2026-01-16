@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/pujas/price/{id}', [PujaController::class, 'deletePrice']);
     
     // Serviceman Profile Management
+    Route::post('/serviceman/profile/update', [ServicemanController::class, 'updateProfile']);
     Route::get('/serviceman/profile-data', [ServicemanController::class, 'getProfileData']);
     Route::get('/serviceman/experiences', [ServicemanController::class, 'getExperiences']);
     Route::get('/serviceman/achievements', [ServicemanController::class, 'getAchievements']);
