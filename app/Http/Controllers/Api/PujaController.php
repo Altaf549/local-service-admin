@@ -329,9 +329,9 @@ class PujaController extends Controller
                 'material_file' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             ]);
 
-            // Find existing puja price
-            $pujaPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
-                ->where('puja_id', $id)
+            // Find the brahman puja price record by ID
+            $pujaPrice = \App\Models\BrahmanPujaPrice::where('id', $id)
+                ->where('brahman_id', $user->id)
                 ->first();
 
             if (!$pujaPrice) {
@@ -339,7 +339,7 @@ class PujaController extends Controller
                     'success' => false,
                     'message' => 'Puja price not found',
                     'errors' => [
-                        'puja_id' => ['Puja price not found for this puja']
+                        'id' => ['Puja price not found or you do not have permission to update it']
                     ]
                 ], 404);
             }
@@ -349,21 +349,16 @@ class PujaController extends Controller
             
             // Handle material file upload if provided
             if ($request->hasFile('material_file')) {
-                // Get existing brahman puja price to check for old material file
-                $existingPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
-                    ->where('puja_id', $id)
-                    ->first();
-                
                 // Delete old material file if exists
-                if ($existingPrice && $existingPrice->material_file) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($existingPrice->material_file);
+                if ($pujaPrice->material_file) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($pujaPrice->material_file);
                 }
                 
                 // Store new material file
                 $data['material_file'] = $request->file('material_file')->store('pujas/materials', 'public');
             }
 
-            // Update or create brahman-specific puja price
+            // Update the brahman puja price
             $pujaPrice->update($data);
 
             return response()->json([
@@ -415,9 +410,9 @@ class PujaController extends Controller
                 ], 403);
             }
 
-            // Find and delete puja price
-            $pujaPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
-                ->where('puja_id', $id)
+            // Find the brahman puja price record by ID
+            $pujaPrice = \App\Models\BrahmanPujaPrice::where('id', $id)
+                ->where('brahman_id', $user->id)
                 ->first();
 
             if (!$pujaPrice) {
@@ -425,7 +420,7 @@ class PujaController extends Controller
                     'success' => false,
                     'message' => 'Puja price not found',
                     'errors' => [
-                        'puja_id' => ['Puja price not found for this puja']
+                        'id' => ['Puja price not found or you do not have permission to delete it']
                     ]
                 ], 404);
             }

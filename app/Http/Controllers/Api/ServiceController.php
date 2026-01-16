@@ -274,8 +274,8 @@ class ServiceController extends Controller
 
             // Get specific service price for this serviceman
             $price = \App\Models\ServicemanServicePrice::with(['serviceman', 'service.category'])
+                ->where('id', $id)
                 ->where('serviceman_id', $user->id)
-                ->where('service_id', $id)
                 ->first();
 
             if (!$price) {
@@ -283,7 +283,7 @@ class ServiceController extends Controller
                     'success' => false,
                     'message' => 'Service price not found',
                     'errors' => [
-                        'service_id' => ['Service price not found for this service']
+                        'id' => ['Service price not found or you do not have permission to view it']
                     ]
                 ], 404);
             }
@@ -350,9 +350,9 @@ class ServiceController extends Controller
                 'price' => 'required|numeric|min:0',
             ]);
 
-            // Find existing service price
-            $price = \App\Models\ServicemanServicePrice::where('serviceman_id', $user->id)
-                ->where('service_id', $id)
+            // Find the serviceman service price record by ID
+            $price = \App\Models\ServicemanServicePrice::where('id', $id)
+                ->where('serviceman_id', $user->id)
                 ->first();
 
             if (!$price) {
@@ -360,7 +360,7 @@ class ServiceController extends Controller
                     'success' => false,
                     'message' => 'Service price not found',
                     'errors' => [
-                        'service_id' => ['Service price not found for this service']
+                        'id' => ['Service price not found or you do not have permission to update it']
                     ]
                 ], 404);
             }
@@ -417,9 +417,9 @@ class ServiceController extends Controller
                 ], 403);
             }
 
-            // Find and delete service price
-            $price = \App\Models\ServicemanServicePrice::where('serviceman_id', $user->id)
-                ->where('service_id', $id)
+            // Find the serviceman service price record by ID
+            $price = \App\Models\ServicemanServicePrice::where('id', $id)
+                ->where('serviceman_id', $user->id)
                 ->first();
 
             if (!$price) {
@@ -427,7 +427,7 @@ class ServiceController extends Controller
                     'success' => false,
                     'message' => 'Service price not found',
                     'errors' => [
-                        'service_id' => ['Service price not found for this service']
+                        'id' => ['Service price not found or you do not have permission to delete it']
                     ]
                 ], 404);
             }
