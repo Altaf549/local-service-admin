@@ -88,11 +88,14 @@ class ServicemanController extends Controller
         }
 
         $serviceman->update($data);
-
+$servicemanData = $serviceman->toArray();
+        if ($serviceman->profile_photo) {
+            $servicemanData['profile_photo_url'] = asset('storage/' . $serviceman->profile_photo);
+        }
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully',
-            'data' => $serviceman,
+            'data' => $servicemanData,
         ]);
     }
 

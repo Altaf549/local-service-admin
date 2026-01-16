@@ -85,11 +85,16 @@ class BrahmanController extends Controller
         }
 
         $brahman->update($data);
+        // Include profile photo URL in response
+        $brahmanData = $brahman->toArray();
+        if ($brahman->profile_photo) {
+            $brahmanData['profile_photo_url'] = asset('storage/' . $brahman->profile_photo);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully',
-            'data' => $brahman,
+            'data' => $brahmanData,
         ]);
     }
 

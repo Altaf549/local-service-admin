@@ -105,10 +105,20 @@ class AuthController extends Controller
             'availability_status' => 'available',
         ]);
 
+        $token = $serviceman->createToken('serviceman_token')->plainTextToken;
+
+        // Prepare serviceman data with full image URLs
+        $servicemanData = $serviceman->toArray();
+        $servicemanData['profile_photo_url'] = $serviceman->profile_photo_url;
+        $servicemanData['id_proof_image_url'] = $serviceman->id_proof_image_url;
+
         return response()->json([
             'success' => true,
             'message' => 'Serviceman registered successfully',
-            'data' => $serviceman,
+            'data' => [
+                'serviceman' => $servicemanData,
+                'token' => $token,
+            ],
         ], 201);
     }
 
@@ -166,10 +176,20 @@ class AuthController extends Controller
             'availability_status' => 'available',
         ]);
 
+        $token = $brahman->createToken('brahman_token')->plainTextToken;
+
+        // Prepare brahman data with full image URLs
+        $brahmanData = $brahman->toArray();
+        $brahmanData['profile_photo_url'] = $brahman->profile_photo_url;
+        $brahmanData['id_proof_image_url'] = $brahman->id_proof_image_url;
+
         return response()->json([
             'success' => true,
             'message' => 'Brahman registered successfully',
-            'data' => $brahman,
+            'data' => [
+                'brahman' => $brahmanData,
+                'token' => $token,
+            ],
         ], 201);
     }
 
