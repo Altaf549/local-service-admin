@@ -123,15 +123,27 @@ class ServiceController extends Controller
                 'price' => 'required|numeric|min:0',
             ]);
 
-            $servicemanServicePrice = \App\Models\ServicemanServicePrice::updateOrCreate(
-                [
-                    'serviceman_id' => $user->id,
-                    'service_id' => $id,
-                ],
-                [
-                    'price' => $validated['price'],
-                ]
-            );
+            // Check if price already exists for this serviceman and service
+            $existingPrice = \App\Models\ServicemanServicePrice::where('serviceman_id', $user->id)
+                ->where('service_id', $id)
+                ->first();
+
+            if ($existingPrice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Price already added for this service',
+                    'errors' => [
+                        'service_id' => ['Price already exists for this service. Use update endpoint to modify.']
+                    ]
+                ], 422);
+            }
+
+            // Create new serviceman service price
+            $servicemanServicePrice = \App\Models\ServicemanServicePrice::create([
+                'serviceman_id' => $user->id,
+                'service_id' => $id,
+                'price' => $validated['price'],
+            ]);
 
             return response()->json([
                 'success' => true,

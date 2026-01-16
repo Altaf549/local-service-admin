@@ -116,33 +116,36 @@ class PujaController extends Controller
 
         $puja = Puja::findOrFail($id);
         
+        // Check if price already exists for this brahman and puja
+        $existingPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
+            ->where('puja_id', $id)
+            ->first();
+
+        if ($existingPrice) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Price already added for this puja',
+                'errors' => [
+                    'puja_id' => ['Price already exists for this puja. Use update endpoint to modify.']
+                ]
+            ], 422);
+        }
+        
         // Prepare data for brahman-specific puja price
-        $data = ['price' => $request->price];
+        $data = [
+            'brahman_id' => $user->id,
+            'puja_id' => $id,
+            'price' => $request->price
+        ];
         
         // Handle material file upload if provided
         if ($request->hasFile('material_file')) {
-            // Get existing brahman puja price to check for old material file
-            $existingPrice = \App\Models\BrahmanPujaPrice::where('brahman_id', $user->id)
-                ->where('puja_id', $id)
-                ->first();
-            
-            // Delete old material file if exists
-            if ($existingPrice && $existingPrice->material_file) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingPrice->material_file);
-            }
-            
             // Store new material file
             $data['material_file'] = $request->file('material_file')->store('pujas/materials', 'public');
         }
 
-        // Update or create brahman-specific puja price
-        $brahmanPujaPrice = \App\Models\BrahmanPujaPrice::updateOrCreate(
-            [
-                'brahman_id' => $user->id,
-                'puja_id' => $id,
-            ],
-            $data
-        );
+        // Create new brahman-specific puja price
+        $brahmanPujaPrice = \App\Models\BrahmanPujaPrice::create($data);
 
         return response()->json([
             'success' => true,
